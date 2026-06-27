@@ -50,7 +50,6 @@ public class RestResponseDTO {
     public static RestResponseDTO success(String message, Object detail) {
         return RestResponseDTO.builder().code(ResponseStatus.SUCCESS.getKey())
                 .status(ResponseStatus.SUCCESS.getValue())
-                .code(ResponseStatus.SUCCESS.getKey())
                 .message(message)
                 .detail(detail)
                 .build();
@@ -58,21 +57,21 @@ public class RestResponseDTO {
 
     public static RestResponseDTO internalServerError(String message) {
         return RestResponseDTO.builder().code(ResponseStatus.INTERNAL_SERVER_ERROR.getKey())
-                .status(ResponseStatus.INTERNAL_SERVER_ERROR.getKey())
+                .status(ResponseStatus.INTERNAL_SERVER_ERROR.getValue())
                 .message(message)
                 .build();
     }
 
     public static RestResponseDTO error(String message) {
         return RestResponseDTO.builder().code(ResponseStatus.FAILURE.getKey())
-                .status(ResponseStatus.FAILURE.getKey())
+                .status(ResponseStatus.FAILURE.getValue())
                 .message(message)
                 .build();
     }
 
     public static RestResponseDTO error(String message, Object detail) {
         return RestResponseDTO.builder().code(ResponseStatus.FAILURE.getKey())
-                .status(ResponseStatus.FAILURE.getKey())
+                .status(ResponseStatus.FAILURE.getValue())
                 .message(message)
                 .detail(detail)
                 .build();
