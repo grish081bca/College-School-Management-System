@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.college.erp.collegemanagementsystem.dto.RestResponseDTO;
 import com.college.erp.collegemanagementsystem.enums.ResponseStatus;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -82,6 +87,26 @@ public class GlobalExceptionHandler {
                 "Unexpected server error",
                 request.getRequestURI(),
                 List.of(detailMessage));
+    }
+
+    @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class, JwtException.class})
+    public ResponseEntity<RestResponseDTO> handleAuthentication(Exception exception, HttpServletRequest request) {
+        return buildResponse(
+                HttpStatus.UNAUTHORIZED,
+                ResponseStatus.UNAUTHORIZED_USER,
+                exception.getMessage() != null ? exception.getMessage() : "Unauthorized",
+                request.getRequestURI(),
+                List.of());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<RestResponseDTO> handleAccessDenied(AccessDeniedException exception, HttpServletRequest request) {
+        return buildResponse(
+                HttpStatus.FORBIDDEN,
+                ResponseStatus.UNAUTHORIZED_USER,
+                exception.getMessage() != null ? exception.getMessage() : "Access denied",
+                request.getRequestURI(),
+                List.of());
     }
 
     private ResponseEntity<RestResponseDTO> buildResponse(HttpStatus status, ResponseStatus responseStatus, String message, String path, List<String> details) {
