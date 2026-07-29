@@ -1,6 +1,8 @@
 package com.college.erp.collegemanagementsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.college.erp.collegemanagementsystem.enums.TenantStatus;
+import com.college.erp.collegemanagementsystem.enums.TenantType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -81,10 +84,23 @@ public class Tenant extends AuditableEntity {
     @Column(name = "status", nullable = false, length = 20)
     private TenantStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tenant_type", nullable = false, length = 20)
+    private TenantType tenantType;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_tenant_id")
+    @EqualsAndHashCode.Exclude
+    private Tenant parentTenant;
+
     @PrePersist
     protected void ensureStatus() {
         if (status == null) {
             status = TenantStatus.ACTIVE;
+        }
+        if (tenantType == null) {
+            tenantType = TenantType.HEAD;
         }
     }
 }
