@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.college.erp.collegemanagementsystem.dto.request.TenantCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.TenantUpdateRequest;
-import com.college.erp.collegemanagementsystem.dto.response.TenantResponse;
 import com.college.erp.collegemanagementsystem.service.TenantService;
 
 /**
@@ -58,7 +57,6 @@ public class TenantController {
 
     @PutMapping("/update")
     public ResponseEntity<RestResponseDTO> updateTenant(@Param("id") Long id, @Valid @RequestBody TenantUpdateRequest request) {
-        RestResponseDTO restResponseDTO = new RestResponseDTO();
         if (id == null) {
             return ResponseEntity.badRequest().body(RestResponseDTO.badRequest("Tenant must be provided."));
         }

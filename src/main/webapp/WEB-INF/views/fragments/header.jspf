@@ -1,0 +1,21 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!doctype html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>College ERP</title>
+    <link rel="stylesheet" href="<c:url
+        value='/css/app.css'/>">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="<c:url value='/web/dashboard'/>">College ERP</a>
+    <nav><c:forEach items="${allowedMenus}" var="menu"><c:if test="${empty menu.parentMenuId and not empty menu.menuUrl}"><a href="<c:url value='${menu.menuUrl}'/>"><c:out value="${menu.menuName}"/></a></c:if></c:forEach>
+        <form class="inline" action="<c:url value='/web/logout'/>" method="post">
+            <button class="link-button">Logout</button>
+        </form>
+    </nav>
+</header>
+<main class="container">
+    <c:if test="${not empty success}">
+    <div class="alert success"><c:out value="${success}"/></div>
+    </c:if>

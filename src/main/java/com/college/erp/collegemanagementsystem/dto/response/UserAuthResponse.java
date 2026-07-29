@@ -1,0 +1,16 @@
+package com.college.erp.collegemanagementsystem.dto.response;
+
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
+public class UserAuthResponse {
+
+    private Long userId;
+    private String username;
+    private String email;
+    private String fullName;
+    private String role;
+    private String userType;
+}

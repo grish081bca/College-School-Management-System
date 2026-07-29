@@ -5,7 +5,6 @@ import java.util.List;
 import com.college.erp.collegemanagementsystem.dto.TenantDTO;
 import com.college.erp.collegemanagementsystem.dto.request.TenantCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.TenantUpdateRequest;
-import com.college.erp.collegemanagementsystem.dto.response.TenantResponse;
 import com.college.erp.collegemanagementsystem.enums.TenantStatus;
 
 /**

@@ -11,7 +11,6 @@ import com.college.erp.collegemanagementsystem.entity.Tenant;
 import com.college.erp.collegemanagementsystem.enums.TenantStatus;
 import com.college.erp.collegemanagementsystem.dto.request.TenantCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.TenantUpdateRequest;
-import com.college.erp.collegemanagementsystem.dto.response.TenantResponse;
 import com.college.erp.collegemanagementsystem.mapper.TenantMapper;
 import com.college.erp.collegemanagementsystem.repository.TenantRepository;
 import com.college.erp.collegemanagementsystem.service.TenantService;

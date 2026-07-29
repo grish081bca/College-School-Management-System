@@ -1,8 +1,8 @@
 package com.college.erp.collegemanagementsystem.repository;
 
 import java.util.Optional;
+import java.util.List;
 
-import org.hibernate.sql.Update;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.college.erp.collegemanagementsystem.entity.Tenant;
 
@@ -38,4 +38,8 @@ public interface TenantRepository extends JpaRepository<Tenant, Long> {
     boolean existsByState_Id(Long stateId);
 
     boolean existsByCity_Id(Long cityId);
+
+    List<Tenant> findByParentTenant_Id(Long parentTenantId);
+
+    boolean existsByParentTenant_Id(Long parentTenantId);
 }

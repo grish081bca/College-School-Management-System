@@ -1,12 +1,11 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/college_management_system?useSSL=false
+    username: root
+    password: grishshrestha
     hikari:
       connection-timeout: 20000
       auto-commit: true
-
   jpa:
     hibernate:
       ddl-auto: validate
@@ -15,10 +14,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
   flyway:
     enabled: true
     locations: classpath:db/migration
-
   application:
     name: Multi-Tenant College Management System
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+server:
+  error:
+    include-message: always
+    include-stacktrace: always

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.college.erp.collegemanagementsystem.dto.RestResponseDTO;
 import com.college.erp.collegemanagementsystem.enums.ResponseStatus;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -89,7 +88,7 @@ public class GlobalExceptionHandler {
                 List.of(detailMessage));
     }
 
-    @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class, JwtException.class})
+    @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
     public ResponseEntity<RestResponseDTO> handleAuthentication(Exception exception, HttpServletRequest request) {
         return buildResponse(
                 HttpStatus.UNAUTHORIZED,
