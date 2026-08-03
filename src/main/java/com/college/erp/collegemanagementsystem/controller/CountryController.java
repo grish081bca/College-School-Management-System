@@ -1,7 +1,5 @@
 package com.college.erp.collegemanagementsystem.controller;
 
-import java.util.List;
-
 import com.college.erp.collegemanagementsystem.dto.CountryDTO;
 import com.college.erp.collegemanagementsystem.dto.RestResponseDTO;
 import com.college.erp.collegemanagementsystem.dto.request.CountryCreateRequest;
@@ -53,8 +51,10 @@ public class CountryController {
     }
 
     @GetMapping
-    public ResponseEntity<RestResponseDTO> getAllCountries() {
-        List<CountryDTO> response = countryService.getAllCountries();
+    public ResponseEntity<RestResponseDTO> getAllCountries(@RequestParam(required = false) String q,
+                                                           @RequestParam(defaultValue = "1") Integer page,
+                                                           @RequestParam(defaultValue = "10") Integer size) {
+        var response = countryService.getCountriesPage(q, page, size);
         return ResponseEntity.ok(RestResponseDTO.success("Countries Found Successfully", response));
     }
 

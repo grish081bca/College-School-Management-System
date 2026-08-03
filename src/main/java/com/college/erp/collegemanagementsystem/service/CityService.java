@@ -2,6 +2,7 @@ package com.college.erp.collegemanagementsystem.service;
 
 import java.util.List;
 import com.college.erp.collegemanagementsystem.dto.CityDTO;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.dto.request.CityCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.CityUpdateRequest;
 
@@ -18,6 +19,8 @@ public interface CityService {
     CityDTO getCityById(Long id);
 
     List<CityDTO> getAllCities();
+
+    PagablePage<CityDTO> getCitiesPage(String search, Long stateId, Integer page, Integer size);
 
     List<CityDTO> getCitiesByStateId(Long stateId);
 

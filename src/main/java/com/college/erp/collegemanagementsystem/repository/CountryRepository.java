@@ -1,6 +1,7 @@
 package com.college.erp.collegemanagementsystem.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.college.erp.collegemanagementsystem.entity.Country;
 
 /**
@@ -8,7 +9,7 @@ import com.college.erp.collegemanagementsystem.entity.Country;
  *
  */
 
-public interface CountryRepository extends JpaRepository<Country, Long> {
+public interface CountryRepository extends JpaRepository<Country, Long>, JpaSpecificationExecutor<Country> {
     Country findCountryById(Long id);
 
     boolean existsByNameIgnoreCase(String name);

@@ -3,6 +3,7 @@ package com.college.erp.collegemanagementsystem.service.impl;
 import java.util.List;
 
 import com.college.erp.collegemanagementsystem.dto.CityDTO;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.dto.request.CityCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.CityUpdateRequest;
 import com.college.erp.collegemanagementsystem.entity.City;
@@ -17,6 +18,9 @@ import com.college.erp.collegemanagementsystem.service.CityService;
 import com.college.erp.collegemanagementsystem.util.ConvertUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * @author grish
@@ -84,6 +88,29 @@ public class CityServiceImpl implements CityService {
             throw new ResourceNotFoundException("No cities found.");
         }
         return cities.stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<CityDTO> getCitiesPage(String search, Long stateId, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
+        Specification<City> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            if (search != null && !search.isBlank()) {
+                String term = "%" + search.trim().toLowerCase() + "%";
+                var state = root.join("state");
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(builder.lower(root.get("name")), term),
+                        builder.like(builder.lower(state.get("name")), term),
+                        builder.like(builder.lower(state.join("country").get("name")), term)
+                ));
+            }
+            if (stateId != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("state").get("id"), stateId));
+            }
+            return predicate;
+        };
+        return PagablePage.from(cityRepository.findAll(specification, pageRequest).map(this::toDto));
     }
 
     @Override

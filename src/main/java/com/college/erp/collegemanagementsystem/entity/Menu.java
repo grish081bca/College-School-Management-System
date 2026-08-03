@@ -46,5 +46,5 @@ public class Menu extends AuditableEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "menu_type", nullable = false, length = 30)
-    private MenuType menuType = MenuType.TENANT;
+    private MenuType menuType = MenuType.SUB_MENU;
 }

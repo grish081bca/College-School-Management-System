@@ -53,8 +53,11 @@ public class CityController {
     }
 
     @GetMapping
-    public ResponseEntity<RestResponseDTO> getAllCities() {
-        List<CityDTO> response = cityService.getAllCities();
+    public ResponseEntity<RestResponseDTO> getAllCities(@RequestParam(required = false) String q,
+                                                        @RequestParam(required = false) Long stateId,
+                                                        @RequestParam(defaultValue = "1") Integer page,
+                                                        @RequestParam(defaultValue = "10") Integer size) {
+        var response = cityService.getCitiesPage(q, stateId, page, size);
         return ResponseEntity.ok(RestResponseDTO.success("Cities Found Successfully", response));
     }
 

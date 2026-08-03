@@ -1,6 +1,7 @@
 package com.college.erp.collegemanagementsystem.service;
 
 import com.college.erp.collegemanagementsystem.dto.UserTemplateDTO;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.enums.UserStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 
@@ -12,6 +13,8 @@ public interface UserTemplateService {
     UserTemplateDTO changeStatus(Long id, UserStatus status);
 
     List<UserTemplateDTO> findAll();
+
+    PagablePage<UserTemplateDTO> findPage(String search, Long tenantId, UserType userType, UserStatus status, Integer page, Integer size);
 
     List<UserTemplateDTO> findByTenant(Long tenantId);
 

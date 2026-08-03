@@ -53,8 +53,11 @@ public class StateController {
     }
 
     @GetMapping
-    public ResponseEntity<RestResponseDTO> getAllStates() {
-        List<StateDTO> response = stateService.getAllStates();
+    public ResponseEntity<RestResponseDTO> getAllStates(@RequestParam(required = false) String q,
+                                                        @RequestParam(required = false) Long countryId,
+                                                        @RequestParam(defaultValue = "1") Integer page,
+                                                        @RequestParam(defaultValue = "10") Integer size) {
+        var response = stateService.getStatesPage(q, countryId, page, size);
         return ResponseEntity.ok(RestResponseDTO.success("States Found Successfully", response));
     }
 

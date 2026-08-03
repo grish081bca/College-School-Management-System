@@ -1,0 +1,15 @@
+<label>Search
+    <input name="q" value="<c:out value='${q}'/>" placeholder="Search records">
+</label>
+<label>Rows
+    <select name="size">
+        <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
+        <option value="25" ${pageSize == 25 ? 'selected' : ''}>25</option>
+        <option value="50" ${pageSize == 50 ? 'selected' : ''}>50</option>
+        <option value="100" ${pageSize == 100 ? 'selected' : ''}>100</option>
+    </select>
+</label>
+<div class="filter-actions">
+    <button class="primary" type="submit">Apply</button>
+    <a class="button secondary" href="<c:url value='${filterActionUrl}'/>">Reset</a>
+</div>

@@ -1,38 +1,35 @@
 <%@ include file="fragments/header.jspf" %>
-<div class="page-heading">
-    <div><p class="eyebrow">Location setup</p>
-        <h1>Countries</h1></div>
-</div>
-<section class="panel"><h2>Add country</h2>
-    <form class="form-grid" action="<c:url value='/web/countries'/>" method="post"><label>Name<input name="name"
-                                                                                                     required
-                                                                                                     maxlength="100"></label><label>ISO
-        code<input name="isoCode" required maxlength="3"></label>
-        <button class="primary" type="submit">Add country</button>
+<c:set var="pageEyebrow" value="Location setup"/>
+<c:set var="pageTitle" value="Countries"/>
+<c:set var="pageDescription" value="Manage country master data used by tenants and addresses."/>
+<c:set var="pageActionUrl" value="/web/countries/add"/>
+<c:set var="pageActionText" value="Add country"/>
+<%@ include file="fragments/page-header.jspf" %>
+<section class="filter-panel">
+    <form class="filter-grid" action="<c:url value='/web/countries'/>" method="get">
+        <c:set var="filterActionUrl" value="/web/countries"/>
+        <%@ include file="fragments/search-filter.jspf" %>
     </form>
 </section>
 <section class="panel">
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>ISO code</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody><c:forEach items="${countries}" var="country">
-            <tr>
-                <td>${country.id}</td>
-                <td><c:out value="${country.name}"/></td>
-                <td><c:out value="${country.isoCode}"/></td>
-                <td>
-                    <form action="<c:url value='/web/countries/${country.id}/delete'/>" method="post">
-                        <button class="danger" type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        </c:forEach></tbody>
-    </table>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>ID</th><th>Name</th><th>ISO code</th><th>Actions</th></tr></thead>
+            <tbody><c:forEach items="${page.objects}" var="country">
+                <tr>
+                    <td>${country.id}</td>
+                    <td><c:out value="${country.name}"/></td>
+                    <td><c:out value="${country.isoCode}"/></td>
+                    <td>
+                        <form action="<c:url value='/web/countries/${country.id}/delete'/>" method="post">
+                            <button class="danger" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </c:forEach></tbody>
+        </table>
+    </div>
+    <%@ include file="fragments/data-table-empty.jspf" %>
+    <%@ include file="fragments/pagination.jspf" %>
 </section>
 <%@ include file="fragments/footer.jspf" %>

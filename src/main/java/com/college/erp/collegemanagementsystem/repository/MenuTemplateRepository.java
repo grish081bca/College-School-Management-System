@@ -5,13 +5,14 @@ import com.college.erp.collegemanagementsystem.enums.MenuStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface MenuTemplateRepository extends JpaRepository<MenuTemplate, Long> {
+public interface MenuTemplateRepository extends JpaRepository<MenuTemplate, Long>, JpaSpecificationExecutor<MenuTemplate> {
 
     @EntityGraph(attributePaths = {"tenant", "menu", "menu.parentMenu"})
     List<MenuTemplate> findAllByOrderByIdDesc();

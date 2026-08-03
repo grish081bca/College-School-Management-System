@@ -2,6 +2,8 @@ package com.college.erp.collegemanagementsystem.controller;
 
 import com.college.erp.collegemanagementsystem.dto.RestResponseDTO;
 import com.college.erp.collegemanagementsystem.dto.UserTemplateDTO;
+import com.college.erp.collegemanagementsystem.enums.UserStatus;
+import com.college.erp.collegemanagementsystem.enums.UserType;
 import com.college.erp.collegemanagementsystem.service.UserTemplateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,12 @@ public class UserTemplateController {
     }
 
     @GetMapping
-    public ResponseEntity<RestResponseDTO> list() {
-        return ResponseEntity.ok(RestResponseDTO.success("User templates found successfully", userTemplateService.findAll()));
+    public ResponseEntity<RestResponseDTO> list(@RequestParam(required = false) String q,
+                                                @RequestParam(required = false) Long tenantId,
+                                                @RequestParam(required = false) UserType userType,
+                                                @RequestParam(required = false) UserStatus status,
+                                                @RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(RestResponseDTO.success("User templates found successfully", userTemplateService.findPage(q, tenantId, userType, status, page, size)));
     }
 }

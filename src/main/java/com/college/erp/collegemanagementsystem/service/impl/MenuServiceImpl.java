@@ -1,6 +1,7 @@
 package com.college.erp.collegemanagementsystem.service.impl;
 
 import com.college.erp.collegemanagementsystem.dto.MenuDTO;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.entity.Menu;
 import com.college.erp.collegemanagementsystem.enums.MenuStatus;
 import com.college.erp.collegemanagementsystem.enums.MenuType;
@@ -9,6 +10,8 @@ import com.college.erp.collegemanagementsystem.exception.ResourceNotFoundExcepti
 import com.college.erp.collegemanagementsystem.repository.MenuRepository;
 import com.college.erp.collegemanagementsystem.service.MenuService;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +59,31 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional(readOnly = true)
+    public PagablePage<MenuDTO> findPage(String search, MenuStatus status, MenuType menuType, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.ASC, "displayOrder", "menuName"));
+        Specification<Menu> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            if (search != null && !search.isBlank()) {
+                String term = "%" + search.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(builder.lower(root.get("menuCode")), term),
+                        builder.like(builder.lower(root.get("menuName")), term),
+                        builder.like(builder.lower(root.get("menuUrl")), term)
+                ));
+            }
+            if (status != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("status"), status));
+            }
+            if (menuType != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("menuType"), menuType));
+            }
+            return predicate;
+        };
+        return PagablePage.from(menuRepository.findAll(specification, pageRequest).map(this::toDto));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<MenuDTO> findActive() {
         return menuRepository.findByStatusOrderByDisplayOrderAscMenuNameAsc(MenuStatus.ACTIVE).stream()
                 .map(this::toDto)
@@ -91,7 +119,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setIcon(dto.getIcon());
         menu.setDisplayOrder(dto.getDisplayOrder() == null ? 0 : dto.getDisplayOrder());
         menu.setStatus(dto.getStatus() == null || dto.getStatus().isBlank() ? MenuStatus.ACTIVE : MenuStatus.valueOf(dto.getStatus()));
-        menu.setMenuType(dto.getMenuType() == null || dto.getMenuType().isBlank() ? MenuType.TENANT : MenuType.valueOf(dto.getMenuType()));
+        menu.setMenuType(dto.getMenuType() == null || dto.getMenuType().isBlank() ? MenuType.SUB_MENU : MenuType.valueOf(dto.getMenuType()));
         menu.setParentMenu(dto.getParentMenuId() == null ? null : getMenu(dto.getParentMenuId()));
     }
 

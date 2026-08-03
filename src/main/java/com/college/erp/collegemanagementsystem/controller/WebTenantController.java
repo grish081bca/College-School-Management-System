@@ -25,8 +25,19 @@ public class WebTenantController {
     }
 
     @GetMapping("/web/tenants")
-    public String list(Model m) {
-        add(m);
+    public String list(@RequestParam(required = false) String q,
+                       @RequestParam(required = false) TenantStatus status,
+                       @RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer size,
+                       Model m) {
+        m.addAttribute("page", service.getTenantsPage(q, status, page, size));
+        m.addAttribute("statuses", TenantStatus.values());
+        m.addAttribute("q", q);
+        m.addAttribute("selectedStatus", status);
+        var filters = WebPagination.filters();
+        filters.put("q", q);
+        filters.put("status", status);
+        WebPagination.add(m, "/web/tenants", size, filters);
         return "tenants";
     }
 
@@ -39,11 +50,17 @@ public class WebTenantController {
         m.addAttribute("tenantRequest", new TenantCreateRequest());
     }
 
+    @GetMapping("/web/tenants/add")
+    public String addForm(Model m) {
+        add(m);
+        return "tenant-add";
+    }
+
     @PostMapping("/web/tenants")
     public String create(@Valid @ModelAttribute("tenantRequest") TenantCreateRequest r, BindingResult b, Model m, RedirectAttributes a) {
         if (b.hasErrors()) {
             add(m);
-            return "tenants";
+            return "tenant-add";
         }
         service.createTenant(r);
         a.addFlashAttribute("success", "Tenant created successfully.");

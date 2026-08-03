@@ -3,6 +3,7 @@ package com.college.erp.collegemanagementsystem.controller;
 import com.college.erp.collegemanagementsystem.dto.MenuDTO;
 import com.college.erp.collegemanagementsystem.dto.RestResponseDTO;
 import com.college.erp.collegemanagementsystem.enums.MenuStatus;
+import com.college.erp.collegemanagementsystem.enums.MenuType;
 import com.college.erp.collegemanagementsystem.service.MenuService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,12 @@ public class MenuController {
     }
 
     @GetMapping
-    public ResponseEntity<RestResponseDTO> list() {
-        return ResponseEntity.ok(RestResponseDTO.success("Menus found successfully", menuService.findAll()));
+    public ResponseEntity<RestResponseDTO> list(@RequestParam(required = false) String q,
+                                                @RequestParam(required = false) MenuStatus status,
+                                                @RequestParam(required = false) MenuType menuType,
+                                                @RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(RestResponseDTO.success("Menus found successfully", menuService.findPage(q, status, menuType, page, size)));
     }
 
     @PutMapping("/{id}/status")

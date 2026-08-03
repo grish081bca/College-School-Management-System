@@ -1,6 +1,7 @@
 package com.college.erp.collegemanagementsystem.service.impl;
 
 import com.college.erp.collegemanagementsystem.dto.UserTemplateDTO;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.entity.Tenant;
 import com.college.erp.collegemanagementsystem.entity.UserTemplate;
 import com.college.erp.collegemanagementsystem.enums.UserStatus;
@@ -11,6 +12,9 @@ import com.college.erp.collegemanagementsystem.repository.UserTemplateRepository
 import com.college.erp.collegemanagementsystem.service.UserTemplateService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -52,6 +56,30 @@ public class UserTemplateServiceImpl implements UserTemplateService {
     @Transactional(readOnly = true)
     public List<UserTemplateDTO> findAll() {
         return userTemplateRepository.findAllByOrderByIdDesc().stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<UserTemplateDTO> findPage(String search, Long tenantId, UserType userType, UserStatus status, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
+        Specification<UserTemplate> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            if (search != null && !search.isBlank()) {
+                String term = "%" + search.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.like(builder.lower(root.join("tenant").get("tenantName")), term));
+            }
+            if (tenantId != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("tenant").get("id"), tenantId));
+            }
+            if (userType != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("userType"), userType));
+            }
+            if (status != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("status"), status));
+            }
+            return predicate;
+        };
+        return PagablePage.from(userTemplateRepository.findAll(specification, pageRequest).map(this::toDto));
     }
 
     @Override

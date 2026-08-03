@@ -1,16 +1,12 @@
 package com.college.erp.collegemanagementsystem.controller;
 
-import java.util.List;
-
 import com.college.erp.collegemanagementsystem.dto.RestResponseDTO;
 import com.college.erp.collegemanagementsystem.dto.TenantDTO;
-import com.college.erp.collegemanagementsystem.enums.ResponseStatus;
 import com.college.erp.collegemanagementsystem.enums.TenantStatus;
 import jakarta.validation.Valid;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.college.erp.collegemanagementsystem.dto.request.TenantCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.TenantUpdateRequest;
@@ -95,9 +91,12 @@ public class TenantController {
     }
 
     @GetMapping
-    public ResponseEntity<RestResponseDTO> getAllTenants() {
+    public ResponseEntity<RestResponseDTO> getAllTenants(@RequestParam(required = false) String q,
+                                                         @RequestParam(required = false) TenantStatus status,
+                                                         @RequestParam(defaultValue = "1") Integer page,
+                                                         @RequestParam(defaultValue = "10") Integer size) {
         try {
-            List<TenantDTO> tenantList = tenantService.getAllTenants();
+            var tenantList = tenantService.getTenantsPage(q, status, page, size);
             return ResponseEntity.ok(RestResponseDTO.success("Tenants Found Successfully", tenantList));
         }catch (Exception e){
             return new ResponseEntity<>(RestResponseDTO.failure(e.getMessage()), HttpStatus.NOT_FOUND);

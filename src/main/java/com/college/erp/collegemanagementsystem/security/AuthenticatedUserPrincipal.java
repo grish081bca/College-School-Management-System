@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.time.OffsetDateTime;
 
 @Getter
 public class AuthenticatedUserPrincipal implements UserDetails {
@@ -24,6 +25,9 @@ public class AuthenticatedUserPrincipal implements UserDetails {
     private final boolean credentialsNonExpired;
     private final UserRole userRole;
     private final UserType userType;
+    private final String fullName;
+    private final OffsetDateTime lastLoginAt;
+    private final OffsetDateTime passwordChangedAt;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public AuthenticatedUserPrincipal(Long userId,
@@ -37,6 +41,9 @@ public class AuthenticatedUserPrincipal implements UserDetails {
                                       boolean credentialsNonExpired,
                                       UserRole userRole,
                                       UserType userType,
+                                      String fullName,
+                                      OffsetDateTime lastLoginAt,
+                                      OffsetDateTime passwordChangedAt,
                                       Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
         this.tenantId = tenantId;
@@ -49,6 +56,9 @@ public class AuthenticatedUserPrincipal implements UserDetails {
         this.credentialsNonExpired = credentialsNonExpired;
         this.userRole = userRole;
         this.userType = userType;
+        this.fullName = fullName;
+        this.lastLoginAt = lastLoginAt;
+        this.passwordChangedAt = passwordChangedAt;
         this.authorities = authorities;
     }
 
@@ -65,7 +75,30 @@ public class AuthenticatedUserPrincipal implements UserDetails {
                 !user.isPasswordResetRequired(),
                 user.getUserRole(),
                 user.getUserType(),
+                buildFullName(user),
+                user.getLastLoginAt(),
+                user.getPasswordChangedAt(),
                 authorities
         );
+    }
+
+    private static String buildFullName(User user) {
+        StringBuilder builder = new StringBuilder();
+        if (user.getFirstName() != null && !user.getFirstName().isBlank()) {
+            builder.append(user.getFirstName().trim());
+        }
+        if (user.getMiddleName() != null && !user.getMiddleName().isBlank()) {
+            if (builder.length() > 0) {
+                builder.append(' ');
+            }
+            builder.append(user.getMiddleName().trim());
+        }
+        if (user.getLastName() != null && !user.getLastName().isBlank()) {
+            if (builder.length() > 0) {
+                builder.append(' ');
+            }
+            builder.append(user.getLastName().trim());
+        }
+        return builder.length() == 0 ? user.getUsername() : builder.toString();
     }
 }

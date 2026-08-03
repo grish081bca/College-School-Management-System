@@ -2,6 +2,7 @@ package com.college.erp.collegemanagementsystem.service.impl;
 
 import java.util.List;
 
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.dto.StateDTO;
 import com.college.erp.collegemanagementsystem.dto.request.StateCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.StateUpdateRequest;
@@ -18,6 +19,9 @@ import com.college.erp.collegemanagementsystem.util.ConvertUtils;
 import com.college.erp.collegemanagementsystem.validation.LocationValidationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * @author grish
@@ -90,6 +94,27 @@ public class StateServiceImpl implements StateService {
             throw new ResourceNotFoundException("No states found.");
         }
         return states.stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<StateDTO> getStatesPage(String search, Long countryId, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
+        Specification<State> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            if (search != null && !search.isBlank()) {
+                String term = "%" + search.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(builder.lower(root.get("name")), term),
+                        builder.like(builder.lower(root.join("country").get("name")), term)
+                ));
+            }
+            if (countryId != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("country").get("id"), countryId));
+            }
+            return predicate;
+        };
+        return PagablePage.from(stateRepository.findAll(specification, pageRequest).map(this::toDto));
     }
 
     @Override

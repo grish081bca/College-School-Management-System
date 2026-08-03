@@ -8,14 +8,82 @@
         value='/css/app.css'/>">
 </head>
 <body>
-<header class="topbar"><a class="brand" href="<c:url value='/web/dashboard'/>">College ERP</a>
-    <nav><c:forEach items="${allowedMenus}" var="menu"><c:if test="${empty menu.parentMenuId and not empty menu.menuUrl}"><a href="<c:url value='${menu.menuUrl}'/>"><c:out value="${menu.menuName}"/></a></c:if></c:forEach>
-        <form class="inline" action="<c:url value='/web/logout'/>" method="post">
-            <button class="link-button">Logout</button>
-        </form>
-    </nav>
-</header>
+<div class="app-shell" id="appShell">
+    <aside class="sidebar">
+        <a class="sidebar-logo" href="<c:url value='/web/dashboard'/>">
+            <span class="logo-mark">CE</span>
+            <span class="logo-text"><strong>College ERP</strong><small><c:out value="${currentTenantCode}"/></small></span>
+        </a>
+        <nav class="sidebar-nav">
+            <c:forEach items="${allowedMenus}" var="superMenu">
+                <c:if test="${empty superMenu.parentMenuId}">
+                    <div class="menu-group open">
+                        <c:choose>
+                            <c:when test="${not empty superMenu.menuUrl}">
+                                <a class="super-menu" href="<c:url value='${superMenu.menuUrl}'/>"><c:out value="${superMenu.menuName}"/></a>
+                            </c:when>
+                            <c:otherwise>
+                                <button class="super-menu menu-toggle" type="button"><span><c:out value="${superMenu.menuName}"/></span><span class="menu-caret">v</span></button>
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="sub-menu-list">
+                            <c:forEach items="${allowedMenus}" var="subMenu">
+                                <c:if test="${subMenu.parentMenuId == superMenu.id and not empty subMenu.menuUrl}">
+                                    <a class="sub-menu" href="<c:url value='${subMenu.menuUrl}'/>"><c:out value="${subMenu.menuName}"/></a>
+                                </c:if>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </c:if>
+            </c:forEach>
+        </nav>
+    </aside>
+    <div class="main-area">
+        <header class="content-header">
+            <div class="header-title">
+                <button class="icon-button sidebar-toggle" type="button" aria-label="Toggle sidebar" aria-expanded="true">Menu</button>
+                <div>
+                    <span class="meta-label">Current page</span>
+                    <strong><c:out value="${currentPageName}"/></strong>
+                </div>
+            </div>
+            <div class="user-summary">
+                <div>
+                    <span class="meta-label">Username</span>
+                    <strong><c:out value="${currentUsername}"/></strong>
+                </div>
+                <div>
+                    <span class="meta-label">Last login</span>
+                    <strong><c:out value="${empty currentLastLoginAt ? 'Not available' : currentLastLoginAt}"/></strong>
+                </div>
+                <div>
+                    <span class="meta-label">Last password change</span>
+                    <strong><c:out value="${empty currentPasswordChangedAt ? 'Not available' : currentPasswordChangedAt}"/></strong>
+                </div>
+                <div>
+                    <span class="meta-label">Date and time</span>
+                    <strong id="currentDateTime">--</strong>
+                </div>
+            </div>
+            <div class="profile-menu">
+                <button class="profile-trigger" type="button" aria-expanded="false">
+                    <span class="avatar"><c:out value="${currentUserInitial}"/></span>
+                    <span><c:out value="${currentUserFullName}"/></span>
+                </button>
+                <div class="profile-dropdown">
+                    <a href="<c:url value='/web/my-profile'/>">My profile</a>
+                    <a href="<c:url value='/web/change-password'/>">Change password</a>
+                    <a href="<c:url value='/web/reset-password'/>">Reset password</a>
+                    <form action="<c:url value='/web/logout'/>" method="post">
+                        <button class="link-button menu-logout" type="submit">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </header>
 <main class="container">
     <c:if test="${not empty success}">
     <div class="alert success"><c:out value="${success}"/></div>
+    </c:if>
+    <c:if test="${not empty error}">
+    <div class="alert error"><c:out value="${error}"/></div>
     </c:if>

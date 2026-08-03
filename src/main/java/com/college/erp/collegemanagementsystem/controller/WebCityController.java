@@ -20,8 +20,19 @@ public class WebCityController {
     }
 
     @GetMapping("/web/cities")
-    public String list(Model m) {
-        add(m);
+    public String list(@RequestParam(required = false) String q,
+                       @RequestParam(required = false) Long stateId,
+                       @RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer size,
+                       Model m) {
+        m.addAttribute("page", service.getCitiesPage(q, stateId, page, size));
+        m.addAttribute("states", states.getAllStates());
+        m.addAttribute("q", q);
+        m.addAttribute("stateId", stateId);
+        var filters = WebPagination.filters();
+        filters.put("q", q);
+        filters.put("stateId", stateId);
+        WebPagination.add(m, "/web/cities", size, filters);
         return "cities";
     }
 
@@ -31,11 +42,17 @@ public class WebCityController {
         m.addAttribute("cityRequest", new CityCreateRequest());
     }
 
+    @GetMapping("/web/cities/add")
+    public String addForm(Model m) {
+        add(m);
+        return "city-add";
+    }
+
     @PostMapping("/web/cities")
     public String create(@Valid @ModelAttribute("cityRequest") CityCreateRequest r, BindingResult b, Model m, RedirectAttributes a) {
         if (b.hasErrors()) {
             add(m);
-            return "cities";
+            return "city-add";
         }
         service.createCity(r);
         a.addFlashAttribute("success", "City created successfully.");

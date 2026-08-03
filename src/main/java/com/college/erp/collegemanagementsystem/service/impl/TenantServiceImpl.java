@@ -2,8 +2,11 @@ package com.college.erp.collegemanagementsystem.service.impl;
 
 import java.util.List;
 
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.dto.TenantDTO;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.college.erp.collegemanagementsystem.exception.ResourceNotFoundException;
@@ -101,6 +104,29 @@ public class TenantServiceImpl implements TenantService {
             throw new ResourceNotFoundException("No tenants found.");
         }
         return tenantMapper.toTenantList(tenants);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<TenantDTO> getTenantsPage(String search, TenantStatus status, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
+        Specification<Tenant> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            if (search != null && !search.isBlank()) {
+                String term = "%" + search.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(builder.lower(root.get("tenantCode")), term),
+                        builder.like(builder.lower(root.get("tenantName")), term),
+                        builder.like(builder.lower(root.get("contactEmail")), term),
+                        builder.like(builder.lower(root.get("contactPhone")), term)
+                ));
+            }
+            if (status != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("status"), status));
+            }
+            return predicate;
+        };
+        return PagablePage.from(tenantRepository.findAll(specification, pageRequest).map(tenantMapper::toDto));
     }
 
     @Override

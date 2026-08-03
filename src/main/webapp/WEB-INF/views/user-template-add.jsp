@@ -1,0 +1,26 @@
+<%@ include file="fragments/header.jspf" %>
+<c:set var="pageEyebrow" value="Access administration"/>
+<c:set var="pageTitle" value="Add user template"/>
+<c:set var="pageDescription" value="Assign an allowed user type to a tenant."/>
+<c:set var="pageActionUrl" value="/web/user-templates"/>
+<c:set var="pageActionText" value="List user templates"/>
+<%@ include file="fragments/page-header.jspf" %>
+<section class="form-panel">
+    <form class="form-grid enterprise-form" action="<c:url value='/web/user-templates'/>" method="post">
+        <label>Tenant<select name="tenantId" required>
+            <option value="">Select tenant</option>
+            <c:forEach items="${tenants}" var="tenant"><option value="${tenant.id}">${tenant.tenantName}</option></c:forEach>
+        </select></label>
+        <label>User type<select name="userType" required>
+            <c:forEach items="${userTypes}" var="type"><option value="${type}">${type}</option></c:forEach>
+        </select></label>
+        <label>Status<select name="status">
+            <c:forEach items="${statuses}" var="status"><option value="${status}">${status}</option></c:forEach>
+        </select></label>
+        <div class="form-actions">
+            <button class="primary" type="submit">Add user template</button>
+            <a class="button secondary" href="<c:url value='/web/user-templates'/>">Cancel</a>
+        </div>
+    </form>
+</section>
+<%@ include file="fragments/footer.jspf" %>

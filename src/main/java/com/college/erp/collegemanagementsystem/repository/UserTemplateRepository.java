@@ -5,11 +5,12 @@ import com.college.erp.collegemanagementsystem.enums.UserStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserTemplateRepository extends JpaRepository<UserTemplate, Long> {
+public interface UserTemplateRepository extends JpaRepository<UserTemplate, Long>, JpaSpecificationExecutor<UserTemplate> {
 
     @EntityGraph(attributePaths = "tenant")
     List<UserTemplate> findAllByOrderByIdDesc();

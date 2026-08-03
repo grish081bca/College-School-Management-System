@@ -1,6 +1,7 @@
 package com.college.erp.collegemanagementsystem.service;
 
 import java.util.List;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.dto.StateDTO;
 import com.college.erp.collegemanagementsystem.dto.request.StateCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.StateUpdateRequest;
@@ -18,6 +19,8 @@ public interface StateService {
     StateDTO getStateById(Long id);
 
     List<StateDTO> getAllStates();
+
+    PagablePage<StateDTO> getStatesPage(String search, Long countryId, Integer page, Integer size);
 
     List<StateDTO> getStatesByCountryId(Long countryId);
 

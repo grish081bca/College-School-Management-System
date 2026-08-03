@@ -25,9 +25,34 @@ public class WebMenuTemplateController {
     }
 
     @GetMapping("/web/menu-templates")
-    public String list(Model model) {
-        add(model);
+    public String list(@RequestParam(required = false) String q,
+                       @RequestParam(required = false) Long tenantId,
+                       @RequestParam(required = false) UserType userType,
+                       @RequestParam(required = false) MenuStatus status,
+                       @RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer size,
+                       Model model) {
+        model.addAttribute("page", menuTemplateService.findPage(q, tenantId, userType, status, page, size));
+        model.addAttribute("tenants", tenantService.getAllTenants());
+        model.addAttribute("userTypes", UserType.values());
+        model.addAttribute("statuses", MenuStatus.values());
+        model.addAttribute("q", q);
+        model.addAttribute("tenantId", tenantId);
+        model.addAttribute("selectedUserType", userType);
+        model.addAttribute("selectedStatus", status);
+        var filters = WebPagination.filters();
+        filters.put("q", q);
+        filters.put("tenantId", tenantId);
+        filters.put("userType", userType);
+        filters.put("status", status);
+        WebPagination.add(model, "/web/menu-templates", size, filters);
         return "menu-templates";
+    }
+
+    @GetMapping("/web/menu-templates/add")
+    public String addForm(Model model) {
+        add(model);
+        return "menu-template-add";
     }
 
     @PostMapping("/web/menu-templates")

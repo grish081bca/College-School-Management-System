@@ -2,6 +2,7 @@ package com.college.erp.collegemanagementsystem.service.impl;
 
 import com.college.erp.collegemanagementsystem.dto.MenuDTO;
 import com.college.erp.collegemanagementsystem.dto.MenuTemplateDTO;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.entity.Menu;
 import com.college.erp.collegemanagementsystem.entity.MenuTemplate;
 import com.college.erp.collegemanagementsystem.entity.Tenant;
@@ -14,6 +15,9 @@ import com.college.erp.collegemanagementsystem.repository.TenantRepository;
 import com.college.erp.collegemanagementsystem.service.MenuTemplateService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -67,6 +71,34 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
     @Transactional(readOnly = true)
     public List<MenuTemplateDTO> findAll() {
         return menuTemplateRepository.findAllByOrderByIdDesc().stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<MenuTemplateDTO> findPage(String search, Long tenantId, UserType userType, MenuStatus status, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
+        Specification<MenuTemplate> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            if (search != null && !search.isBlank()) {
+                String term = "%" + search.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(builder.lower(root.join("menu").get("menuName")), term),
+                        builder.like(builder.lower(root.join("menu").get("menuCode")), term),
+                        builder.like(builder.lower(root.join("tenant").get("tenantName")), term)
+                ));
+            }
+            if (tenantId != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("tenant").get("id"), tenantId));
+            }
+            if (userType != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("userType"), userType));
+            }
+            if (status != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("status"), status));
+            }
+            return predicate;
+        };
+        return PagablePage.from(menuTemplateRepository.findAll(specification, pageRequest).map(this::toDto));
     }
 
     @Override

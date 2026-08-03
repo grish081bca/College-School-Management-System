@@ -19,9 +19,30 @@ public class WebMenuController {
     }
 
     @GetMapping("/web/menus")
-    public String list(Model model) {
-        add(model);
+    public String list(@RequestParam(required = false) String q,
+                       @RequestParam(required = false) MenuStatus status,
+                       @RequestParam(required = false) MenuType menuType,
+                       @RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer size,
+                       Model model) {
+        model.addAttribute("page", menuService.findPage(q, status, menuType, page, size));
+        model.addAttribute("statuses", MenuStatus.values());
+        model.addAttribute("menuTypes", MenuType.values());
+        model.addAttribute("q", q);
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedMenuType", menuType);
+        var filters = WebPagination.filters();
+        filters.put("q", q);
+        filters.put("status", status);
+        filters.put("menuType", menuType);
+        WebPagination.add(model, "/web/menus", size, filters);
         return "menus";
+    }
+
+    @GetMapping("/web/menus/add")
+    public String addForm(Model model) {
+        add(model);
+        return "menu-add";
     }
 
     @PostMapping("/web/menus")

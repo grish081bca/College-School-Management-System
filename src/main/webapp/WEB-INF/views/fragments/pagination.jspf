@@ -1,0 +1,20 @@
+<div class="pagination-bar">
+    <div class="pagination-summary">
+        Showing page <strong><c:out value="${page.currentPage}"/></strong>
+        of <strong><c:out value="${page.lastpage == 0 ? 1 : page.lastpage}"/></strong>
+        - <strong><c:out value="${page.totalResults}"/></strong> results
+    </div>
+    <c:if test="${page.lastpage > 1}">
+        <nav class="pagination" aria-label="Pagination">
+            <c:if test="${page.currentPage > 1}">
+                <a href="<c:url value='${paginationBaseUrl}'/>?page=${page.currentPage - 1}&size=${pageSize}${paginationQuery}">Previous</a>
+            </c:if>
+            <c:forEach items="${page.pageList}" var="pageNumber">
+                <a class="${pageNumber == page.currentPage ? 'active' : ''}" href="<c:url value='${paginationBaseUrl}'/>?page=${pageNumber}&size=${pageSize}${paginationQuery}">${pageNumber}</a>
+            </c:forEach>
+            <c:if test="${page.currentPage < page.lastpage}">
+                <a href="<c:url value='${paginationBaseUrl}'/>?page=${page.currentPage + 1}&size=${pageSize}${paginationQuery}">Next</a>
+            </c:if>
+        </nav>
+    </c:if>
+</div>

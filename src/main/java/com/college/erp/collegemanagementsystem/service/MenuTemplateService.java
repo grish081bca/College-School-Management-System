@@ -2,6 +2,7 @@ package com.college.erp.collegemanagementsystem.service;
 
 import com.college.erp.collegemanagementsystem.dto.MenuDTO;
 import com.college.erp.collegemanagementsystem.dto.MenuTemplateDTO;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.enums.MenuStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 
@@ -13,6 +14,8 @@ public interface MenuTemplateService {
     MenuTemplateDTO changeStatus(Long id, MenuStatus status);
 
     List<MenuTemplateDTO> findAll();
+
+    PagablePage<MenuTemplateDTO> findPage(String search, Long tenantId, UserType userType, MenuStatus status, Integer page, Integer size);
 
     List<MenuDTO> findMenusByTenantAndUserType(Long tenantId, UserType userType);
 }

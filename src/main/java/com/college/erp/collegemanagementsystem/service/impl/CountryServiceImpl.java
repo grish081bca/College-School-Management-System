@@ -3,6 +3,7 @@ package com.college.erp.collegemanagementsystem.service.impl;
 import java.util.List;
 
 import com.college.erp.collegemanagementsystem.dto.CountryDTO;
+import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.dto.request.CountryCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.CountryUpdateRequest;
 import com.college.erp.collegemanagementsystem.entity.Country;
@@ -16,6 +17,9 @@ import com.college.erp.collegemanagementsystem.service.CountryService;
 import com.college.erp.collegemanagementsystem.util.ConvertUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * @author grish
@@ -93,6 +97,23 @@ public class CountryServiceImpl implements CountryService {
             throw new ResourceNotFoundException("No countries found.");
         }
         return countries.stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<CountryDTO> getCountriesPage(String search, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
+        Specification<Country> specification = (root, query, builder) -> {
+            if (search == null || search.isBlank()) {
+                return builder.conjunction();
+            }
+            String term = "%" + search.trim().toLowerCase() + "%";
+            return builder.or(
+                    builder.like(builder.lower(root.get("name")), term),
+                    builder.like(builder.lower(root.get("isoCode")), term)
+            );
+        };
+        return PagablePage.from(countryRepository.findAll(specification, pageRequest).map(this::toDto));
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.college.erp.collegemanagementsystem.entity.Tenant;
 
 /**
@@ -11,7 +12,7 @@ import com.college.erp.collegemanagementsystem.entity.Tenant;
  *
  */
 
-public interface TenantRepository extends JpaRepository<Tenant, Long> {
+public interface TenantRepository extends JpaRepository<Tenant, Long>, JpaSpecificationExecutor<Tenant> {
 
     Optional<Tenant> findByTenantCodeIgnoreCase(String tenantCode);
 

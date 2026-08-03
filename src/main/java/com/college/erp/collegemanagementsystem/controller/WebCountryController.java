@@ -18,15 +18,27 @@ public class WebCountryController {
     }
 
     @GetMapping("/web/countries")
-    public String list(Model m) {
-        m.addAttribute("countries", service.getAllCountries());
-        m.addAttribute("countryRequest", new CountryCreateRequest());
+    public String list(@RequestParam(required = false) String q,
+                       @RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer size,
+                       Model m) {
+        m.addAttribute("page", service.getCountriesPage(q, page, size));
+        m.addAttribute("q", q);
+        var filters = WebPagination.filters();
+        filters.put("q", q);
+        WebPagination.add(m, "/web/countries", size, filters);
         return "countries";
+    }
+
+    @GetMapping("/web/countries/add")
+    public String add(Model m) {
+        m.addAttribute("countryRequest", new CountryCreateRequest());
+        return "country-add";
     }
 
     @PostMapping("/web/countries")
     public String create(@Valid @ModelAttribute("countryRequest") CountryCreateRequest r, BindingResult b, RedirectAttributes a) {
-        if (b.hasErrors()) return "countries";
+        if (b.hasErrors()) return "country-add";
         service.createCountry(r);
         a.addFlashAttribute("success", "Country created successfully.");
         return "redirect:/web/countries";
