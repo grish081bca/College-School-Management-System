@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Access administration"/>
-<c:set var="pageTitle" value="Add menu template"/>
-<c:set var="pageDescription" value="Assign a menu to a user type and tenant scope."/>
-<c:set var="pageActionUrl" value="/web/menu-templates"/>
-<c:set var="pageActionText" value="List menu templates"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Access administration"/>--%>
+<%--<c:set var="pageTitle" value="Add menu template"/>--%>
+<%--<c:set var="pageDescription" value="Assign a menu to a user type and tenant scope."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/menu-templates"/>--%>
+<%--<c:set var="pageActionText" value="List menu templates"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="form-panel">
     <form class="form-grid enterprise-form" action="<c:url value='/web/menu-templates'/>" method="post">
         <label>Tenant<select name="tenantId">

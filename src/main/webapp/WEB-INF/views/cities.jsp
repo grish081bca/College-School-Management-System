@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Location setup"/>
-<c:set var="pageTitle" value="Cities"/>
-<c:set var="pageDescription" value="Manage city master data and state mapping."/>
-<c:set var="pageActionUrl" value="/web/cities/add"/>
-<c:set var="pageActionText" value="Add city"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Location setup"/>--%>
+<%--<c:set var="pageTitle" value="Cities"/>--%>
+<%--<c:set var="pageDescription" value="Manage city master data and state mapping."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/cities/add"/>--%>
+<%--<c:set var="pageActionText" value="Add city"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
     <form class="filter-grid" action="<c:url value='/web/cities'/>" method="get">
         <label>State

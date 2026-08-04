@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Access administration"/>
-<c:set var="pageTitle" value="Add menu"/>
-<c:set var="pageDescription" value="Create a super menu or sub-menu for the dynamic sidebar."/>
-<c:set var="pageActionUrl" value="/web/menus"/>
-<c:set var="pageActionText" value="List menus"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Access administration"/>--%>
+<%--<c:set var="pageTitle" value="Add menu"/>--%>
+<%--<c:set var="pageDescription" value="Create a super menu or sub-menu for the dynamic sidebar."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/menus"/>--%>
+<%--<c:set var="pageActionText" value="List menus"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="form-panel">
     <form class="form-grid enterprise-form" action="<c:url value='/web/menus'/>" method="post">
         <label>Code<input name="menuCode" required></label>

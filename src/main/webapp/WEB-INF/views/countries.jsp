@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Location setup"/>
-<c:set var="pageTitle" value="Countries"/>
-<c:set var="pageDescription" value="Manage country master data used by tenants and addresses."/>
-<c:set var="pageActionUrl" value="/web/countries/add"/>
-<c:set var="pageActionText" value="Add country"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Location setup"/>--%>
+<%--<c:set var="pageTitle" value="Countries"/>--%>
+<%--<c:set var="pageDescription" value="Manage country master data used by tenants and addresses."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/countries/add"/>--%>
+<%--<c:set var="pageActionText" value="Add country"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
     <form class="filter-grid" action="<c:url value='/web/countries'/>" method="get">
         <c:set var="filterActionUrl" value="/web/countries"/>

@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Tenant administration"/>
-<c:set var="pageTitle" value="Add tenant"/>
-<c:set var="pageDescription" value="Create a tenant college with contact and location details."/>
-<c:set var="pageActionUrl" value="/web/tenants"/>
-<c:set var="pageActionText" value="List tenants"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Tenant administration"/>--%>
+<%--<c:set var="pageTitle" value="Add tenant"/>--%>
+<%--<c:set var="pageDescription" value="Create a tenant college with contact and location details."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/tenants"/>--%>
+<%--<c:set var="pageActionText" value="List tenants"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="form-panel">
     <form class="form-grid enterprise-form" action="<c:url value='/web/tenants'/>" method="post">
         <label>Tenant name<input name="tenantName" required></label>

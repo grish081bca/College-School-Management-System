@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Location setup"/>
-<c:set var="pageTitle" value="Add state"/>
-<c:set var="pageDescription" value="Create a state or province under a country."/>
-<c:set var="pageActionUrl" value="/web/states"/>
-<c:set var="pageActionText" value="List states"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Location setup"/>--%>
+<%--<c:set var="pageTitle" value="Add state"/>--%>
+<%--<c:set var="pageDescription" value="Create a state or province under a country."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/states"/>--%>
+<%--<c:set var="pageActionText" value="List states"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="form-panel">
     <form class="form-grid enterprise-form" action="<c:url value='/web/states'/>" method="post">
         <label>Name<input name="name" required maxlength="100"></label>

@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Access administration"/>
-<c:set var="pageTitle" value="Menu templates"/>
-<c:set var="pageDescription" value="Assign active menus to user types globally or per tenant."/>
-<c:set var="pageActionUrl" value="/web/menu-templates/add"/>
-<c:set var="pageActionText" value="Add menu template"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Access administration"/>--%>
+<%--<c:set var="pageTitle" value="Menu templates"/>--%>
+<%--<c:set var="pageDescription" value="Assign active menus to user types globally or per tenant."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/menu-templates/add"/>--%>
+<%--<c:set var="pageActionText" value="Add menu template"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
     <form class="filter-grid" action="<c:url value='/web/menu-templates'/>" method="get">
         <label>Tenant

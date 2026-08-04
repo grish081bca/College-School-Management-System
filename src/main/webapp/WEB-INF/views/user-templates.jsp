@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Access administration"/>
-<c:set var="pageTitle" value="User templates"/>
-<c:set var="pageDescription" value="Control which user types can be created for each tenant."/>
-<c:set var="pageActionUrl" value="/web/user-templates/add"/>
-<c:set var="pageActionText" value="Add user template"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Access administration"/>--%>
+<%--<c:set var="pageTitle" value="User templates"/>--%>
+<%--<c:set var="pageDescription" value="Control which user types can be created for each tenant."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/user-templates/add"/>--%>
+<%--<c:set var="pageActionText" value="Add user template"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
     <form class="filter-grid" action="<c:url value='/web/user-templates'/>" method="get">
         <label>Tenant

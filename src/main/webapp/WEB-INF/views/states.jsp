@@ -1,10 +1,10 @@
 <%@ include file="fragments/header.jspf" %>
-<c:set var="pageEyebrow" value="Location setup"/>
-<c:set var="pageTitle" value="States"/>
-<c:set var="pageDescription" value="Manage states and provinces under configured countries."/>
-<c:set var="pageActionUrl" value="/web/states/add"/>
-<c:set var="pageActionText" value="Add state"/>
-<%@ include file="fragments/page-header.jspf" %>
+<%--<c:set var="pageEyebrow" value="Location setup"/>--%>
+<%--<c:set var="pageTitle" value="States"/>--%>
+<%--<c:set var="pageDescription" value="Manage states and provinces under configured countries."/>--%>
+<%--<c:set var="pageActionUrl" value="/web/states/add"/>--%>
+<%--<c:set var="pageActionText" value="Add state"/>--%>
+<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
     <form class="filter-grid" action="<c:url value='/web/states'/>" method="get">
         <label>Country
