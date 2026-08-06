@@ -25,16 +25,15 @@ public class MenuTemplateController {
 
     @GetMapping
     public ResponseEntity<RestResponseDTO> list(@RequestParam(required = false) String q,
-                                                @RequestParam(required = false) Long tenantId,
                                                 @RequestParam(required = false) UserType userType,
                                                 @RequestParam(required = false) MenuStatus status,
                                                 @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(RestResponseDTO.success("Menu templates found successfully", menuTemplateService.findPage(q, tenantId, userType, status, page, size)));
+        return ResponseEntity.ok(RestResponseDTO.success("Menu templates found successfully", menuTemplateService.findPage(q, userType, status, page, size)));
     }
 
     @GetMapping("/menus")
-    public ResponseEntity<RestResponseDTO> menus(@RequestParam Long tenantId, @RequestParam UserType userType) {
-        return ResponseEntity.ok(RestResponseDTO.success("Menus found successfully", menuTemplateService.findMenusByTenantAndUserType(tenantId, userType)));
+    public ResponseEntity<RestResponseDTO> menus(@RequestParam UserType userType) {
+        return ResponseEntity.ok(RestResponseDTO.success("Menus found successfully", menuTemplateService.findMenusByUserType(userType)));
     }
 }

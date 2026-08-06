@@ -25,11 +25,10 @@ public class UserTemplateController {
 
     @GetMapping
     public ResponseEntity<RestResponseDTO> list(@RequestParam(required = false) String q,
-                                                @RequestParam(required = false) Long tenantId,
                                                 @RequestParam(required = false) UserType userType,
                                                 @RequestParam(required = false) UserStatus status,
                                                 @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(RestResponseDTO.success("User templates found successfully", userTemplateService.findPage(q, tenantId, userType, status, page, size)));
+        return ResponseEntity.ok(RestResponseDTO.success("User templates found successfully", userTemplateService.findPage(q, userType, status, page, size)));
     }
 }

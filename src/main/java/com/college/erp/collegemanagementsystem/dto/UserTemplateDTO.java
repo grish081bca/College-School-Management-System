@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class UserTemplateDTO {
     private Long id;
-    private Long tenantId;
-    private String tenantName;
     private String userType;
+    private Long menuTemplateId;
+    private String menuTemplateName;
     private String status;
 }

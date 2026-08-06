@@ -45,10 +45,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private AuthenticatedUserPrincipal toPrincipal(User user) {
         Set<SimpleGrantedAuthority> authorities = new LinkedHashSet<>();
-        if (user.getUserRole() != null) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()));
-        }
         if (user.getUserType() != null) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getUserType().name()));
             authorities.add(new SimpleGrantedAuthority("USER_TYPE_" + user.getUserType().name()));
         }
 

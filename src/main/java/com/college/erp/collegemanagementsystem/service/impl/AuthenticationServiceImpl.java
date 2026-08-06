@@ -18,6 +18,7 @@ import com.college.erp.collegemanagementsystem.exception.DuplicateResourceExcept
 import com.college.erp.collegemanagementsystem.exception.ResourceNotFoundException;
 import com.college.erp.collegemanagementsystem.repository.PasswordResetTokenRepository;
 import com.college.erp.collegemanagementsystem.repository.TenantRepository;
+import com.college.erp.collegemanagementsystem.repository.UserTemplateRepository;
 import com.college.erp.collegemanagementsystem.repository.UserRepository;
 import com.college.erp.collegemanagementsystem.security.AuthenticatedUserPrincipal;
 import com.college.erp.collegemanagementsystem.service.AuthenticationService;
@@ -45,19 +46,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserTemplateService userTemplateService;
+    private final UserTemplateRepository userTemplateRepository;
 
     public AuthenticationServiceImpl(UserRepository userRepository,
                                      TenantRepository tenantRepository,
                                      PasswordResetTokenRepository passwordResetTokenRepository,
                                      PasswordEncoder passwordEncoder,
                                      AuthenticationManager authenticationManager,
-                                     UserTemplateService userTemplateService) {
+                                     UserTemplateService userTemplateService,
+                                     UserTemplateRepository userTemplateRepository) {
         this.userRepository = userRepository;
         this.tenantRepository = tenantRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.userTemplateService = userTemplateService;
+        this.userTemplateRepository = userTemplateRepository;
     }
 
     @Override
@@ -69,7 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (tenant.getStatus() != TenantStatus.ACTIVE) {
             throw new IllegalStateException("Tenant is not active");
         }
-        if (!userTemplateService.canCreateUserType(tenant.getId(), request.getUserType())) {
+        if (!userTemplateService.canCreateUserType(request.getUserType())) {
             throw new IllegalStateException("User type is not allowed for this tenant");
         }
         if (userRepository.existsByUsernameIgnoreCase(request.getUsername())) {
@@ -92,8 +96,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setEnabled(true);
         user.setAccountNonLocked(true);
         user.setPasswordResetRequired(false);
-        user.setUserRole(request.getUserRole());
         user.setUserType(request.getUserType());
+        userTemplateRepository.findByUserType(request.getUserType())
+                .ifPresent(user::setUserTemplate);
         User savedUser = userRepository.save(user);
         return buildAuthResponse(savedUser);
     }
@@ -188,7 +193,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         .username(user.getUsername())
                         .email(user.getEmail())
                         .fullName(buildFullName(user))
-                        .role(user.getUserRole().name())
                         .userType(user.getUserType().name())
                         .build())
                 .tenant(TenantAuthResponse.builder()

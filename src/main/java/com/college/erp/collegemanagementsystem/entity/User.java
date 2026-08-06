@@ -1,7 +1,6 @@
 package com.college.erp.collegemanagementsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.college.erp.collegemanagementsystem.enums.UserRole;
 import com.college.erp.collegemanagementsystem.enums.UserStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 import jakarta.persistence.Column;
@@ -92,20 +91,17 @@ public class User extends AuditableEntity {
     private boolean passwordResetRequired = false;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_role", nullable = false, length = 50)
-    private UserRole userRole;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false, length = 50)
     private UserType userType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_template_id")
+    private UserTemplate userTemplate;
 
     @PrePersist
     protected void ensureDefaults() {
         if (status == null) {
             status = UserStatus.ACTIVE;
-        }
-        if (userRole == null) {
-            userRole = UserRole.COLLEGE_ADMIN;
         }
         if (userType == null) {
             userType = UserType.COLLEGE_ADMIN;

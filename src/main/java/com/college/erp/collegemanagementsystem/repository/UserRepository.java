@@ -9,16 +9,20 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @EntityGraph(attributePaths = "tenant")
+    @Override
+    @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
+    Optional<User> findById(Long id);
+
+    @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByUsernameIgnoreCase(String username);
 
-    @EntityGraph(attributePaths = "tenant")
+    @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByTenant_TenantCodeIgnoreCaseAndUsernameIgnoreCase(String tenantCode, String username);
 
-    @EntityGraph(attributePaths = "tenant")
+    @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByTenant_IdAndUsernameIgnoreCase(Long tenantId, String username);
 
-    @EntityGraph(attributePaths = "tenant")
+    @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByTenant_TenantCodeIgnoreCaseAndEmailIgnoreCase(String tenantCode, String email);
 
     boolean existsByUsernameIgnoreCase(String username);

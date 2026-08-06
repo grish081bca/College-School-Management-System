@@ -5,13 +5,13 @@ import com.college.erp.collegemanagementsystem.dto.MenuTemplateDTO;
 import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.entity.Menu;
 import com.college.erp.collegemanagementsystem.entity.MenuTemplate;
-import com.college.erp.collegemanagementsystem.entity.Tenant;
+import com.college.erp.collegemanagementsystem.entity.UserTemplate;
 import com.college.erp.collegemanagementsystem.enums.MenuStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 import com.college.erp.collegemanagementsystem.exception.ResourceNotFoundException;
 import com.college.erp.collegemanagementsystem.repository.MenuRepository;
 import com.college.erp.collegemanagementsystem.repository.MenuTemplateRepository;
-import com.college.erp.collegemanagementsystem.repository.TenantRepository;
+import com.college.erp.collegemanagementsystem.repository.UserTemplateRepository;
 import com.college.erp.collegemanagementsystem.service.MenuTemplateService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,32 +29,41 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
 
     private final MenuTemplateRepository menuTemplateRepository;
     private final MenuRepository menuRepository;
-    private final TenantRepository tenantRepository;
+    private final UserTemplateRepository userTemplateRepository;
 
     public MenuTemplateServiceImpl(MenuTemplateRepository menuTemplateRepository,
                                    MenuRepository menuRepository,
-                                   TenantRepository tenantRepository) {
+                                   UserTemplateRepository userTemplateRepository) {
         this.menuTemplateRepository = menuTemplateRepository;
         this.menuRepository = menuRepository;
-        this.tenantRepository = tenantRepository;
+        this.userTemplateRepository = userTemplateRepository;
     }
 
     @Override
     public MenuTemplateDTO assignMenuTemplate(MenuTemplateDTO dto) {
-        if (dto == null || dto.getUserType() == null || dto.getMenuId() == null) {
-            throw new IllegalArgumentException("User type and menu are required.");
+        if (dto == null || dto.getUserType() == null || dto.getUserType().isBlank()) {
+            throw new IllegalArgumentException("User type is required.");
+        }
+        if (dto.getTemplateName() == null || dto.getTemplateName().isBlank()) {
+            throw new IllegalArgumentException("Template name is required.");
         }
         UserType userType = UserType.valueOf(dto.getUserType());
-        Menu menu = menuRepository.findById(dto.getMenuId()).orElseThrow(() -> new ResourceNotFoundException("Menu not found."));
-        Tenant tenant = dto.getTenantId() == null ? null : tenantRepository.findById(dto.getTenantId())
-                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found."));
-
-        MenuTemplate template = tenant == null
-                ? menuTemplateRepository.findByTenantIsNullAndUserTypeAndMenu_Id(userType, menu.getId()).orElse(new MenuTemplate())
-                : menuTemplateRepository.findByTenant_IdAndUserTypeAndMenu_Id(tenant.getId(), userType, menu.getId()).orElse(new MenuTemplate());
-        template.setTenant(tenant);
+        List<Long> menuIds = dto.getMenuIds();
+        if ((menuIds == null || menuIds.isEmpty()) && dto.getMenuId() != null) {
+            menuIds = List.of(dto.getMenuId());
+        }
+        if (menuIds == null || menuIds.isEmpty()) {
+            throw new IllegalArgumentException("At least one menu is required.");
+        }
+        List<Menu> menus = menuRepository.findAllById(menuIds);
+        if (menus.size() != menuIds.stream().distinct().count()) {
+            throw new ResourceNotFoundException("One or more menus were not found.");
+        }
+        MenuTemplate template = menuTemplateRepository.findByUserType(userType).orElse(new MenuTemplate());
+        template.setTemplateName(dto.getTemplateName().trim());
         template.setUserType(userType);
-        template.setMenu(menu);
+        template.getMenus().clear();
+        template.getMenus().addAll(menus);
         template.setStatus(dto.getStatus() == null || dto.getStatus().isBlank() ? MenuStatus.ACTIVE : MenuStatus.valueOf(dto.getStatus()));
         return toDto(menuTemplateRepository.save(template));
     }
@@ -75,20 +84,19 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagablePage<MenuTemplateDTO> findPage(String search, Long tenantId, UserType userType, MenuStatus status, Integer page, Integer size) {
+    public PagablePage<MenuTemplateDTO> findPage(String search, UserType userType, MenuStatus status, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
         Specification<MenuTemplate> specification = (root, query, builder) -> {
+            query.distinct(true);
             var predicate = builder.conjunction();
             if (search != null && !search.isBlank()) {
                 String term = "%" + search.trim().toLowerCase() + "%";
+                var menuJoin = root.join("menus", jakarta.persistence.criteria.JoinType.LEFT);
                 predicate = builder.and(predicate, builder.or(
-                        builder.like(builder.lower(root.join("menu").get("menuName")), term),
-                        builder.like(builder.lower(root.join("menu").get("menuCode")), term),
-                        builder.like(builder.lower(root.join("tenant").get("tenantName")), term)
+                        builder.like(builder.lower(root.get("templateName")), term),
+                        builder.like(builder.lower(menuJoin.get("menuName")), term),
+                        builder.like(builder.lower(menuJoin.get("menuCode")), term)
                 ));
-            }
-            if (tenantId != null) {
-                predicate = builder.and(predicate, builder.equal(root.get("tenant").get("id"), tenantId));
             }
             if (userType != null) {
                 predicate = builder.and(predicate, builder.equal(root.get("userType"), userType));
@@ -103,29 +111,48 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MenuDTO> findMenusByTenantAndUserType(Long tenantId, UserType userType) {
+    public List<MenuDTO> findMenusByUserType(UserType userType) {
         if (userType == null) {
             return List.of();
         }
-        List<MenuTemplate> templates = userType == UserType.SUPER_ADMIN
-                ? menuTemplateRepository.findGlobalActiveTemplates(userType, MenuStatus.ACTIVE)
-                : menuTemplateRepository.findActiveTemplates(tenantId, userType, MenuStatus.ACTIVE);
+        List<MenuTemplate> templates = menuTemplateRepository.findActiveTemplates(userType, MenuStatus.ACTIVE);
         Map<Long, MenuDTO> menus = new LinkedHashMap<>();
         for (MenuTemplate template : templates) {
-            Menu menu = template.getMenu();
-            menus.putIfAbsent(menu.getId(), toMenuDto(menu));
+            for (Menu menu : template.getMenus()) {
+                menus.putIfAbsent(menu.getId(), toMenuDto(menu));
+            }
         }
         return List.copyOf(menus.values());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MenuDTO> findMenusForUserTemplate(Long userTemplateId, UserType userType) {
+        if (userTemplateId != null) {
+            UserTemplate userTemplate = userTemplateRepository.findById(userTemplateId).orElse(null);
+            if (userTemplate != null && userTemplate.getStatus() == com.college.erp.collegemanagementsystem.enums.UserStatus.ACTIVE
+                    && userTemplate.getMenuTemplate() != null
+                    && userTemplate.getMenuTemplate().getStatus() == MenuStatus.ACTIVE) {
+                Map<Long, MenuDTO> menus = new LinkedHashMap<>();
+                for (Menu menu : userTemplate.getMenuTemplate().getMenus()) {
+                    if (menu.getStatus() == MenuStatus.ACTIVE) {
+                        menus.putIfAbsent(menu.getId(), toMenuDto(menu));
+                    }
+                }
+                return List.copyOf(menus.values());
+            }
+        }
+        return findMenusByUserType(userType);
     }
 
     private MenuTemplateDTO toDto(MenuTemplate template) {
         MenuTemplateDTO dto = new MenuTemplateDTO();
         dto.setId(template.getId());
-        dto.setTenantId(template.getTenant() != null ? template.getTenant().getId() : null);
-        dto.setTenantName(template.getTenant() != null ? template.getTenant().getTenantName() : "Global");
+        dto.setTemplateName(template.getTemplateName());
         dto.setUserType(template.getUserType().name());
-        dto.setMenuId(template.getMenu().getId());
-        dto.setMenuName(template.getMenu().getMenuName());
+        dto.setMenuIds(template.getMenus().stream().map(Menu::getId).toList());
+        dto.setMenuNames(template.getMenus().stream().map(Menu::getMenuName).toList());
+        dto.setMenuName(String.join(", ", dto.getMenuNames()));
         dto.setStatus(template.getStatus().name());
         return dto;
     }

@@ -14,41 +14,23 @@ import java.util.Optional;
 
 public interface MenuTemplateRepository extends JpaRepository<MenuTemplate, Long>, JpaSpecificationExecutor<MenuTemplate> {
 
-    @EntityGraph(attributePaths = {"tenant", "menu", "menu.parentMenu"})
+    @EntityGraph(attributePaths = {"menus", "menus.parentMenu"})
     List<MenuTemplate> findAllByOrderByIdDesc();
 
-    boolean existsByTenant_IdAndUserTypeAndMenu_Id(Long tenantId, UserType userType, Long menuId);
+    @EntityGraph(attributePaths = {"menus", "menus.parentMenu"})
+    List<MenuTemplate> findAllByOrderByTemplateNameAsc();
 
-    Optional<MenuTemplate> findByTenant_IdAndUserTypeAndMenu_Id(Long tenantId, UserType userType, Long menuId);
-
-    Optional<MenuTemplate> findByTenantIsNullAndUserTypeAndMenu_Id(UserType userType, Long menuId);
+    Optional<MenuTemplate> findByUserType(UserType userType);
 
     @Query("""
             select mt from MenuTemplate mt
-            join fetch mt.menu m
+            join fetch mt.menus m
             left join fetch m.parentMenu
-            left join fetch mt.tenant
             where mt.userType = :userType
               and mt.status = :status
               and m.status = :status
-              and (mt.tenant.id = :tenantId or mt.tenant is null)
             order by m.displayOrder asc, m.menuName asc
             """)
-    List<MenuTemplate> findActiveTemplates(@Param("tenantId") Long tenantId,
-                                           @Param("userType") UserType userType,
+    List<MenuTemplate> findActiveTemplates(@Param("userType") UserType userType,
                                            @Param("status") MenuStatus status);
-
-    @Query("""
-            select mt from MenuTemplate mt
-            join fetch mt.menu m
-            left join fetch m.parentMenu
-            left join fetch mt.tenant
-            where mt.userType = :userType
-              and mt.status = :status
-              and m.status = :status
-              and mt.tenant is null
-            order by m.displayOrder asc, m.menuName asc
-            """)
-    List<MenuTemplate> findGlobalActiveTemplates(@Param("userType") UserType userType,
-                                                 @Param("status") MenuStatus status);
 }

@@ -6,13 +6,16 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
 @Table(name = "menu_templates",
-        uniqueConstraints = @UniqueConstraint(name = "uk_menu_templates_scope", columnNames = {"tenant_id", "user_type", "menu_id"}),
+        uniqueConstraints = @UniqueConstraint(name = "uk_menu_templates_user_type", columnNames = "user_type"),
         indexes = {
-                @Index(name = "idx_menu_templates_tenant_user_type", columnList = "tenant_id,user_type"),
+                @Index(name = "idx_menu_templates_user_type", columnList = "user_type"),
                 @Index(name = "idx_menu_templates_status", columnList = "status")
         })
 public class MenuTemplate extends AuditableEntity {
@@ -21,17 +24,21 @@ public class MenuTemplate extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenant_id")
-    private Tenant tenant;
+    @Column(name = "template_name", nullable = false, length = 150)
+    private String templateName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false, length = 50)
     private UserType userType;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "menu_template_menus",
+            joinColumns = @JoinColumn(name = "menu_template_id"),
+            inverseJoinColumns = @JoinColumn(name = "menu_id")
+    )
+    @OrderBy("displayOrder ASC, menuName ASC")
+    private List<Menu> menus = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)

@@ -1,6 +1,5 @@
 package com.college.erp.collegemanagementsystem.dto.request;
 
-import com.college.erp.collegemanagementsystem.enums.UserRole;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -46,9 +45,6 @@ public class RegisterRequest {
 
     @NotBlank(message = "Confirm password is required")
     private String confirmPassword;
-
-    @NotNull(message = "User role is required")
-    private UserRole userRole;
 
     @NotNull(message = "User type is required")
     private UserType userType;

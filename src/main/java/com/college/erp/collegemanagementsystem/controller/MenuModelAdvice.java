@@ -30,7 +30,9 @@ public class MenuModelAdvice {
             model.addAttribute("allowedMenus", List.of());
             return;
         }
-        List<MenuDTO> allowedMenus = menuTemplateService.findMenusByTenantAndUserType(principal.getTenantId(), principal.getUserType());
+        List<MenuDTO> allowedMenus = menuTemplateService.findMenusForUserTemplate(
+                principal.getUserTemplateId(),
+                principal.getUserType());
         model.addAttribute("allowedMenus", allowedMenus);
         model.addAttribute("currentPageName", resolveCurrentPageName(request, allowedMenus));
         model.addAttribute("loggedInUserType", principal.getUserType());

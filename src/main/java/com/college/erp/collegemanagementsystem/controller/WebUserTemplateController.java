@@ -3,7 +3,7 @@ package com.college.erp.collegemanagementsystem.controller;
 import com.college.erp.collegemanagementsystem.dto.UserTemplateDTO;
 import com.college.erp.collegemanagementsystem.enums.UserStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
-import com.college.erp.collegemanagementsystem.service.TenantService;
+import com.college.erp.collegemanagementsystem.service.MenuTemplateService;
 import com.college.erp.collegemanagementsystem.service.UserTemplateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,32 +14,29 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class WebUserTemplateController {
 
     private final UserTemplateService userTemplateService;
-    private final TenantService tenantService;
+    private final MenuTemplateService menuTemplateService;
 
-    public WebUserTemplateController(UserTemplateService userTemplateService, TenantService tenantService) {
+    public WebUserTemplateController(UserTemplateService userTemplateService,
+                                     MenuTemplateService menuTemplateService) {
         this.userTemplateService = userTemplateService;
-        this.tenantService = tenantService;
+        this.menuTemplateService = menuTemplateService;
     }
 
     @GetMapping("/web/user-templates")
     public String list(@RequestParam(required = false) String q,
-                       @RequestParam(required = false) Long tenantId,
                        @RequestParam(required = false) UserType userType,
                        @RequestParam(required = false) UserStatus status,
                        @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer size,
                        Model model) {
-        model.addAttribute("page", userTemplateService.findPage(q, tenantId, userType, status, page, size));
-        model.addAttribute("tenants", tenantService.getAllTenants());
+        model.addAttribute("page", userTemplateService.findPage(q, userType, status, page, size));
         model.addAttribute("userTypes", UserType.values());
         model.addAttribute("statuses", UserStatus.values());
         model.addAttribute("q", q);
-        model.addAttribute("tenantId", tenantId);
         model.addAttribute("selectedUserType", userType);
         model.addAttribute("selectedStatus", status);
         var filters = WebPagination.filters();
         filters.put("q", q);
-        filters.put("tenantId", tenantId);
         filters.put("userType", userType);
         filters.put("status", status);
         WebPagination.add(model, "/web/user-templates", size, filters);
@@ -68,7 +65,7 @@ public class WebUserTemplateController {
 
     private void add(Model model) {
         model.addAttribute("templates", userTemplateService.findAll());
-        model.addAttribute("tenants", tenantService.getAllTenants());
+        model.addAttribute("menuTemplates", menuTemplateService.findAll());
         model.addAttribute("userTypes", UserType.values());
         model.addAttribute("statuses", UserStatus.values());
         model.addAttribute("templateRequest", new UserTemplateDTO());

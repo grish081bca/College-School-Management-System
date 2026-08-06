@@ -1,7 +1,6 @@
 package com.college.erp.collegemanagementsystem.security;
 
 import com.college.erp.collegemanagementsystem.entity.User;
-import com.college.erp.collegemanagementsystem.enums.UserRole;
 import com.college.erp.collegemanagementsystem.enums.UserStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 import lombok.Getter;
@@ -16,6 +15,7 @@ public class AuthenticatedUserPrincipal implements UserDetails {
 
     private final Long userId;
     private final Long tenantId;
+    private final Long userTemplateId;
     private final String tenantCode;
     private final String username;
     private final String password;
@@ -23,7 +23,6 @@ public class AuthenticatedUserPrincipal implements UserDetails {
     private final boolean accountNonLocked;
     private final boolean accountNonExpired;
     private final boolean credentialsNonExpired;
-    private final UserRole userRole;
     private final UserType userType;
     private final String fullName;
     private final OffsetDateTime lastLoginAt;
@@ -32,6 +31,7 @@ public class AuthenticatedUserPrincipal implements UserDetails {
 
     public AuthenticatedUserPrincipal(Long userId,
                                       Long tenantId,
+                                      Long userTemplateId,
                                       String tenantCode,
                                       String username,
                                       String password,
@@ -39,7 +39,6 @@ public class AuthenticatedUserPrincipal implements UserDetails {
                                       boolean accountNonLocked,
                                       boolean accountNonExpired,
                                       boolean credentialsNonExpired,
-                                      UserRole userRole,
                                       UserType userType,
                                       String fullName,
                                       OffsetDateTime lastLoginAt,
@@ -47,6 +46,7 @@ public class AuthenticatedUserPrincipal implements UserDetails {
                                       Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
         this.tenantId = tenantId;
+        this.userTemplateId = userTemplateId;
         this.tenantCode = tenantCode;
         this.username = username;
         this.password = password;
@@ -54,7 +54,6 @@ public class AuthenticatedUserPrincipal implements UserDetails {
         this.accountNonLocked = accountNonLocked;
         this.accountNonExpired = accountNonExpired;
         this.credentialsNonExpired = credentialsNonExpired;
-        this.userRole = userRole;
         this.userType = userType;
         this.fullName = fullName;
         this.lastLoginAt = lastLoginAt;
@@ -66,6 +65,7 @@ public class AuthenticatedUserPrincipal implements UserDetails {
         return new AuthenticatedUserPrincipal(
                 user.getId(),
                 user.getTenant().getId(),
+                user.getUserTemplate() != null ? user.getUserTemplate().getId() : null,
                 user.getTenant().getTenantCode(),
                 user.getUsername(),
                 user.getPassword(),
@@ -73,7 +73,6 @@ public class AuthenticatedUserPrincipal implements UserDetails {
                 user.isAccountNonLocked(),
                 user.getStatus() == UserStatus.ACTIVE,
                 !user.isPasswordResetRequired(),
-                user.getUserRole(),
                 user.getUserType(),
                 buildFullName(user),
                 user.getLastLoginAt(),

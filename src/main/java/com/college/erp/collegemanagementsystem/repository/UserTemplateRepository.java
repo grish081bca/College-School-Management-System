@@ -12,14 +12,16 @@ import java.util.Optional;
 
 public interface UserTemplateRepository extends JpaRepository<UserTemplate, Long>, JpaSpecificationExecutor<UserTemplate> {
 
-    @EntityGraph(attributePaths = "tenant")
+    @EntityGraph(attributePaths = "menuTemplate")
     List<UserTemplate> findAllByOrderByIdDesc();
 
-    List<UserTemplate> findByTenant_IdAndStatusOrderByUserTypeAsc(Long tenantId, UserStatus status);
+    @EntityGraph(attributePaths = "menuTemplate")
+    List<UserTemplate> findByStatusOrderByUserTypeAsc(UserStatus status);
 
-    boolean existsByTenant_IdAndUserTypeAndStatus(Long tenantId, UserType userType, UserStatus status);
+    boolean existsByUserTypeAndStatus(UserType userType, UserStatus status);
 
-    boolean existsByTenant_IdAndUserType(Long tenantId, UserType userType);
+    boolean existsByUserType(UserType userType);
 
-    Optional<UserTemplate> findByTenant_IdAndUserType(Long tenantId, UserType userType);
+    @EntityGraph(attributePaths = "menuTemplate")
+    Optional<UserTemplate> findByUserType(UserType userType);
 }

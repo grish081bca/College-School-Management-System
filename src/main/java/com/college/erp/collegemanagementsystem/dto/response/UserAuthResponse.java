@@ -11,6 +11,5 @@ public class UserAuthResponse {
     private String username;
     private String email;
     private String fullName;
-    private String role;
     private String userType;
 }

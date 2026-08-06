@@ -15,7 +15,9 @@ public interface MenuTemplateService {
 
     List<MenuTemplateDTO> findAll();
 
-    PagablePage<MenuTemplateDTO> findPage(String search, Long tenantId, UserType userType, MenuStatus status, Integer page, Integer size);
+    PagablePage<MenuTemplateDTO> findPage(String search, UserType userType, MenuStatus status, Integer page, Integer size);
 
-    List<MenuDTO> findMenusByTenantAndUserType(Long tenantId, UserType userType);
+    List<MenuDTO> findMenusByUserType(UserType userType);
+
+    List<MenuDTO> findMenusForUserTemplate(Long userTemplateId, UserType userType);
 }

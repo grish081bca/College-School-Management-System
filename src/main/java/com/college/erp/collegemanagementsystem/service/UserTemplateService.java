@@ -14,9 +14,9 @@ public interface UserTemplateService {
 
     List<UserTemplateDTO> findAll();
 
-    PagablePage<UserTemplateDTO> findPage(String search, Long tenantId, UserType userType, UserStatus status, Integer page, Integer size);
+    PagablePage<UserTemplateDTO> findPage(String search, UserType userType, UserStatus status, Integer page, Integer size);
 
-    List<UserTemplateDTO> findByTenant(Long tenantId);
+    List<UserTemplateDTO> findActive();
 
-    boolean canCreateUserType(Long tenantId, UserType userType);
+    boolean canCreateUserType(UserType userType);
 }
