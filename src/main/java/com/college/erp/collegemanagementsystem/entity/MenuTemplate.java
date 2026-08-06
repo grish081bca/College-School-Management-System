@@ -37,7 +37,7 @@ public class MenuTemplate extends AuditableEntity {
             joinColumns = @JoinColumn(name = "menu_template_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id")
     )
-    @OrderBy("displayOrder ASC, menuName ASC")
+    @OrderBy("displayOrder ASC, name ASC")
     private List<Menu> menus = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
