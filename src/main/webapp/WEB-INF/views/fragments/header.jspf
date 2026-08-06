@@ -23,13 +23,13 @@
                                 <a class="super-menu" href="<c:url value='${superMenu.menuUrl}'/>"><c:out value="${superMenu.name}"/></a>
                             </c:when>
                             <c:otherwise>
-                                <button class="super-menu menu-toggle" type="button"><span><c:out value="${superMenu.menuName}"/></span><span class="menu-caret">v</span></button>
+                                <button class="super-menu menu-toggle" type="button"><span><c:out value="${superMenu.name}"/></span><span class="menu-caret">v</span></button>
                             </c:otherwise>
                         </c:choose>
                         <div class="sub-menu-list">
                             <c:forEach items="${allowedMenus}" var="subMenu">
                                 <c:if test="${subMenu.parentMenuId == superMenu.id and not empty subMenu.menuUrl}">
-                                    <a class="sub-menu" href="<c:url value='${subMenu.menuUrl}'/>"><c:out value="${subMenu.menuName}"/></a>
+                                    <a class="sub-menu" href="<c:url value='${subMenu.menuUrl}'/>"><c:out value="${subMenu.name}"/></a>
                                 </c:if>
                             </c:forEach>
                         </div>

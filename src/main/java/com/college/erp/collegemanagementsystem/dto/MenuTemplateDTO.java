@@ -12,6 +12,8 @@ public class MenuTemplateDTO {
     private Long id;
     private String name;
     private String userType;
+    private Long tenantId;
+    private String tenantName;
     private Long menuId;
     private String menuName;
     private List<Long> menuIds = new ArrayList<>();
