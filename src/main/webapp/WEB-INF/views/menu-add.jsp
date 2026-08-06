@@ -15,7 +15,7 @@
             <option value="">No parent</option>
             <c:forEach items="${activeMenus}" var="parent">
                 <c:if test="${empty parent.parentMenuId}">
-                    <option value="${parent.id}">${parent.menuName}</option>
+                                    <option value="${parent.id}">${parent.name}</option>
                 </c:if>
             </c:forEach>
         </select></label>
