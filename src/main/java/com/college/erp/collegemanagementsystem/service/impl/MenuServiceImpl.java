@@ -85,7 +85,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional(readOnly = true)
     public List<MenuDTO> findActive() {
-        return menuRepository.findByStatusOrderByDisplayOrderAscMenuNameAsc(MenuStatus.ACTIVE).stream()
+        return menuRepository.findByStatusOrderByDisplayOrderAscNameAsc(MenuStatus.ACTIVE).stream()
                 .map(this::toDto)
                 .toList();
     }
