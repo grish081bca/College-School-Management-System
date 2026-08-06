@@ -106,7 +106,7 @@ public class UserTemplateServiceImpl implements UserTemplateService {
         dto.setId(template.getId());
         dto.setUserType(template.getUserType().name());
         dto.setMenuTemplateId(template.getMenuTemplate() != null ? template.getMenuTemplate().getId() : null);
-        dto.setMenuTemplateName(template.getMenuTemplate() != null ? template.getMenuTemplate().getTemplateName() : null);
+        dto.setMenuTemplateName(template.getMenuTemplate() != null ? template.getMenuTemplate().getName() : null);
         dto.setStatus(template.getStatus().name());
         return dto;
     }

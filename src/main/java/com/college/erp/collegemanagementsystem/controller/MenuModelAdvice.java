@@ -83,7 +83,7 @@ public class MenuModelAdvice {
         String uri = request.getRequestURI();
         for (MenuDTO menu : allowedMenus) {
             if (menu.getMenuUrl() != null && uri.equals(request.getContextPath() + menu.getMenuUrl())) {
-                return menu.getMenuName();
+                            return menu.getName();
             }
         }
         if (uri.endsWith("/dashboard")) {

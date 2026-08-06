@@ -44,7 +44,7 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
         if (dto == null || dto.getUserType() == null || dto.getUserType().isBlank()) {
             throw new IllegalArgumentException("User type is required.");
         }
-        if (dto.getTemplateName() == null || dto.getTemplateName().isBlank()) {
+        if (dto.getName() == null || dto.getName().isBlank()) {
             throw new IllegalArgumentException("Template name is required.");
         }
         UserType userType = UserType.valueOf(dto.getUserType());
@@ -60,7 +60,7 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
             throw new ResourceNotFoundException("One or more menus were not found.");
         }
         MenuTemplate template = menuTemplateRepository.findByUserType(userType).orElse(new MenuTemplate());
-        template.setTemplateName(dto.getTemplateName().trim());
+        template.setName(dto.getName().trim());
         template.setUserType(userType);
         template.getMenus().clear();
         template.getMenus().addAll(menus);
