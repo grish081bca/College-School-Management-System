@@ -15,5 +15,5 @@ public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificat
 
     boolean existsByMenuCodeIgnoreCaseAndIdNot(String menuCode, Long id);
 
-    List<Menu> findByStatusOrderByDisplayOrderAscMenuNameAsc(MenuStatus status);
+    List<Menu> findByStatusOrderByDisplayOrderAscNameAsc(MenuStatus status);
 }

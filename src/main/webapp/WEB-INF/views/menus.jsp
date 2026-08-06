@@ -34,7 +34,7 @@
             <tbody><c:forEach items="${page.objects}" var="menu">
                 <tr>
                     <td><c:out value="${menu.menuCode}"/></td>
-                    <td><c:out value="${menu.menuName}"/></td>
+                    <td><c:out value="${menu.name}"/></td>
                     <td><c:out value="${menu.menuUrl}"/></td>
                     <td><c:out value="${menu.parentMenuName}"/></td>
                     <td><c:out value="${menu.menuType}"/></td>

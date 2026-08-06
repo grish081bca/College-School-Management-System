@@ -41,7 +41,7 @@
             <thead><tr><th>Template</th><th>Scope</th><th>User type</th><th>Menus</th><th>Status</th><th>Change status</th></tr></thead>
             <tbody><c:forEach items="${page.objects}" var="template">
                 <tr>
-                    <td><c:out value="${template.templateName}"/></td>
+                    <td><c:out value="${template.name}"/></td>
                     <td><c:out value="${template.tenantName}"/></td>
                     <td><c:out value="${template.userType}"/></td>
                     <td><c:out value="${template.menuName}"/></td>

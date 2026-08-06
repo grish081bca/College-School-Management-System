@@ -52,7 +52,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional(readOnly = true)
     public List<MenuDTO> findAll() {
-        return menuRepository.findAll(Sort.by(Sort.Direction.ASC, "displayOrder", "menuName")).stream()
+        return menuRepository.findAll(Sort.by(Sort.Direction.ASC, "displayOrder", "name")).stream()
                 .map(this::toDto)
                 .toList();
     }
@@ -60,14 +60,14 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional(readOnly = true)
     public PagablePage<MenuDTO> findPage(String search, MenuStatus status, MenuType menuType, Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.ASC, "displayOrder", "menuName"));
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.ASC, "displayOrder", "name"));
         Specification<Menu> specification = (root, query, builder) -> {
             var predicate = builder.conjunction();
             if (search != null && !search.isBlank()) {
                 String term = "%" + search.trim().toLowerCase() + "%";
                 predicate = builder.and(predicate, builder.or(
                         builder.like(builder.lower(root.get("menuCode")), term),
-                        builder.like(builder.lower(root.get("menuName")), term),
+                                                builder.like(builder.lower(root.get("name")), term),
                         builder.like(builder.lower(root.get("menuUrl")), term)
                 ));
             }
@@ -101,7 +101,7 @@ public class MenuServiceImpl implements MenuService {
         if (dto == null || dto.getMenuCode() == null || dto.getMenuCode().isBlank()) {
             throw new IllegalArgumentException("Menu code is required.");
         }
-        if (dto.getMenuName() == null || dto.getMenuName().isBlank()) {
+        if (dto.getName() == null || dto.getName().isBlank()) {
             throw new IllegalArgumentException("Menu name is required.");
         }
         boolean duplicate = id == null
@@ -114,7 +114,7 @@ public class MenuServiceImpl implements MenuService {
 
     private void copy(MenuDTO dto, Menu menu) {
         menu.setMenuCode(dto.getMenuCode().trim().toUpperCase());
-        menu.setMenuName(dto.getMenuName().trim());
+        menu.setName(dto.getName().trim());
         menu.setMenuUrl(dto.getMenuUrl());
         menu.setIcon(dto.getIcon());
         menu.setDisplayOrder(dto.getDisplayOrder() == null ? 0 : dto.getDisplayOrder());
@@ -134,11 +134,11 @@ public class MenuServiceImpl implements MenuService {
         MenuDTO dto = new MenuDTO();
         dto.setId(menu.getId());
         dto.setMenuCode(menu.getMenuCode());
-        dto.setMenuName(menu.getMenuName());
+        dto.setName(menu.getName());
         dto.setMenuUrl(menu.getMenuUrl());
         dto.setIcon(menu.getIcon());
         dto.setParentMenuId(menu.getParentMenu() != null ? menu.getParentMenu().getId() : null);
-        dto.setParentMenuName(menu.getParentMenu() != null ? menu.getParentMenu().getMenuName() : null);
+                dto.setParentMenuName(menu.getParentMenu() != null ? menu.getParentMenu().getName() : null);
         dto.setDisplayOrder(menu.getDisplayOrder());
         dto.setStatus(menu.getStatus().name());
         dto.setMenuType(menu.getMenuType().name());

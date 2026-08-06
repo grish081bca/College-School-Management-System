@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class MenuTemplateDTO {
     private Long id;
-    private String templateName;
+    private String name;
     private String userType;
     private Long menuId;
     private String menuName;

@@ -26,7 +26,20 @@ public class UserTemplate extends AuditableEntity {
     @JoinColumn(name = "menu_template_id")
     private MenuTemplate menuTemplate;
 
+    @Column(name = "user_template_name", length = 150)
+    private String userTemplateName;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private UserStatus status = UserStatus.ACTIVE;
+
+    // Compatibility accessor for mobile-banking style name (no DB change)
+    public String getUserTemplateName() {
+        // fallback to userType name if an explicit template name is not present in this schema
+        return userType != null ? userType.name() : null;
+    }
+
+    public void setUserTemplateName(String name) {
+        // no-op: schema does not have a dedicated user_template_name column; keep as no-op to preserve DB
+    }
 }

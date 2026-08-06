@@ -8,7 +8,7 @@
 <section class="form-panel">
     <form class="form-grid enterprise-form" action="<c:url value='/web/menus'/>" method="post">
         <label>Code<input name="menuCode" required></label>
-        <label>Name<input name="menuName" required></label>
+        <label>Name<input name="name" required></label>
         <label>URL<input name="menuUrl"></label>
         <label>Icon<input name="icon"></label>
         <label>Super menu<select name="parentMenuId">

@@ -18,7 +18,7 @@ public interface MenuTemplateRepository extends JpaRepository<MenuTemplate, Long
     List<MenuTemplate> findAllByOrderByIdDesc();
 
     @EntityGraph(attributePaths = {"menus", "menus.parentMenu"})
-    List<MenuTemplate> findAllByOrderByTemplateNameAsc();
+    List<MenuTemplate> findAllByOrderByNameAsc();
 
     Optional<MenuTemplate> findByUserType(UserType userType);
 
@@ -29,7 +29,7 @@ public interface MenuTemplateRepository extends JpaRepository<MenuTemplate, Long
             where mt.userType = :userType
               and mt.status = :status
               and m.status = :status
-            order by m.displayOrder asc, m.menuName asc
+            order by m.displayOrder asc, m.name asc
             """)
     List<MenuTemplate> findActiveTemplates(@Param("userType") UserType userType,
                                            @Param("status") MenuStatus status);

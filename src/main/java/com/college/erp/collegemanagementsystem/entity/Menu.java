@@ -24,8 +24,8 @@ public class Menu extends AuditableEntity {
     @Column(name = "menu_code", nullable = false, length = 100)
     private String menuCode;
 
-    @Column(name = "menu_name", nullable = false, length = 150)
-    private String menuName;
+    @Column(name = "name", nullable = false, length = 150)
+    private String name;
 
     @Column(name = "menu_url", length = 255)
     private String menuUrl;
@@ -47,4 +47,35 @@ public class Menu extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "menu_type", nullable = false, length = 30)
     private MenuType menuType = MenuType.SUB_MENU;
+
+    // Backward compatibility: keep legacy accessor names mapping to new field 'name'
+    public String getMenuName() {
+        return this.name;
+    }
+
+    public void setMenuName(String menuName) {
+        this.name = menuName;
+    }
+
+    // mobile-banking style accessors
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getSuperId() {
+        return this.parentMenu != null ? this.parentMenu.getId() : null;
+    }
+
+    public void setSuperId(Long superId) {
+        // no-op; set parentMenu via service where needed
+    }
+
+    // bankId is not used in this system; keep nullable DB column for compatibility
+    public Long getBankId() {
+        return null;
+    }
 }

@@ -17,7 +17,7 @@
         <label>Menu template<select name="menuTemplateId">
             <option value="">Use default for user type</option>
             <c:forEach items="${menuTemplates}" var="menuTemplate">
-                <option value="${menuTemplate.id}">${menuTemplate.templateName} - ${menuTemplate.tenantName} - ${menuTemplate.userType}</option>
+                <option value="${menuTemplate.id}">${menuTemplate.name} - ${menuTemplate.tenantName} - ${menuTemplate.userType}</option>
             </c:forEach>
         </select></label>
         <label>Status<select name="status">

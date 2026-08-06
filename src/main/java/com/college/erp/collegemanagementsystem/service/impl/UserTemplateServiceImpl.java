@@ -71,7 +71,7 @@ public class UserTemplateServiceImpl implements UserTemplateService {
             var predicate = builder.conjunction();
             if (search != null && !search.isBlank()) {
                 String term = "%" + search.trim().toLowerCase() + "%";
-                predicate = builder.and(predicate, builder.like(builder.lower(root.join("menuTemplate", jakarta.persistence.criteria.JoinType.LEFT).get("templateName")), term));
+                predicate = builder.and(predicate, builder.like(builder.lower(root.join("menuTemplate", jakarta.persistence.criteria.JoinType.LEFT).get("name")), term));
             }
             if (userType != null) {
                 predicate = builder.and(predicate, builder.equal(root.get("userType"), userType));

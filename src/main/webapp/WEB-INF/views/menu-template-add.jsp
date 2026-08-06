@@ -26,7 +26,7 @@
                         <input type="checkbox" name="menuIds" value="${menu.id}">
                         <span>
                             <c:choose>
-                                <c:when test="${empty menu.parentMenuName}"><c:out value="${menu.menuName}"/></c:when>
+                                <c:when test="${empty menu.parentMenuName}"><c:out value="${menu.name}"/></c:when>
                                 <c:otherwise><c:out value="${menu.parentMenuName}"/> / <c:out value="${menu.menuName}"/></c:otherwise>
                             </c:choose>
                         </span>

@@ -93,8 +93,8 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
                 String term = "%" + search.trim().toLowerCase() + "%";
                 var menuJoin = root.join("menus", jakarta.persistence.criteria.JoinType.LEFT);
                 predicate = builder.and(predicate, builder.or(
-                        builder.like(builder.lower(root.get("templateName")), term),
-                        builder.like(builder.lower(menuJoin.get("menuName")), term),
+                                builder.like(builder.lower(root.get("name")), term),
+                                builder.like(builder.lower(menuJoin.get("name")), term),
                         builder.like(builder.lower(menuJoin.get("menuCode")), term)
                 ));
             }
@@ -148,10 +148,10 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
     private MenuTemplateDTO toDto(MenuTemplate template) {
         MenuTemplateDTO dto = new MenuTemplateDTO();
         dto.setId(template.getId());
-        dto.setTemplateName(template.getTemplateName());
+        dto.setName(template.getName());
         dto.setUserType(template.getUserType().name());
         dto.setMenuIds(template.getMenus().stream().map(Menu::getId).toList());
-        dto.setMenuNames(template.getMenus().stream().map(Menu::getMenuName).toList());
+        dto.setMenuNames(template.getMenus().stream().map(Menu::getName).toList());
         dto.setMenuName(String.join(", ", dto.getMenuNames()));
         dto.setStatus(template.getStatus().name());
         return dto;
@@ -161,11 +161,11 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
         MenuDTO dto = new MenuDTO();
         dto.setId(menu.getId());
         dto.setMenuCode(menu.getMenuCode());
-        dto.setMenuName(menu.getMenuName());
+        dto.setName(menu.getName());
         dto.setMenuUrl(menu.getMenuUrl());
         dto.setIcon(menu.getIcon());
         dto.setParentMenuId(menu.getParentMenu() != null ? menu.getParentMenu().getId() : null);
-        dto.setParentMenuName(menu.getParentMenu() != null ? menu.getParentMenu().getMenuName() : null);
+        dto.setParentMenuName(menu.getParentMenu() != null ? menu.getParentMenu().getName() : null);
         dto.setDisplayOrder(menu.getDisplayOrder());
         dto.setStatus(menu.getStatus().name());
         dto.setMenuType(menu.getMenuType().name());

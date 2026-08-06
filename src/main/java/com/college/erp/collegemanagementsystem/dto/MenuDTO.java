@@ -8,7 +8,7 @@ import lombok.Setter;
 public class MenuDTO {
     private Long id;
     private String menuCode;
-    private String menuName;
+    private String name;
     private String menuUrl;
     private String icon;
     private Long parentMenuId;
