@@ -54,9 +54,18 @@ public class TenantMapperImpl implements TenantMapper {
         }
         TenantDTO dto = new TenantDTO();
         dto.setId(entity.getId());
-        dto.setCreatedDate(entity.getCreatedAt().toString());
+        if (entity.getCreatedAt() != null) {
+            dto.setCreatedDate(entity.getCreatedAt().toString());
+        }
         if (entity.getUpdatedAt() != null) {
             dto.setUpdatedDate(entity.getUpdatedAt().toString());
+        }
+        // createdBy/updatedBy come from AuditableEntity
+        if (entity.getCreatedBy() != null) {
+            dto.setCreatedBy(entity.getCreatedBy());
+        }
+        if (entity.getUpdatedBy() != null) {
+            dto.setUpdatedBy(entity.getUpdatedBy());
         }
         dto.setTenantName(entity.getTenantName());
         dto.setTenantCode(entity.getTenantCode());

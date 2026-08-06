@@ -14,6 +14,8 @@ public class TenantDTO {
     private Long id;
     private String createdDate;
     private String updatedDate;
+    private String createdBy;
+    private String updatedBy;
     private String tenantCode;
     private String tenantName;
     private String contactEmail;

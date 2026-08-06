@@ -8,7 +8,8 @@ import java.util.function.Predicate;
  */
 
 public final class TenantCodeGenerator {
-    private static final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    // Restrict to uppercase alphabet only per requirement (8 characters, letters only)
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final int CODE_LENGTH = 8;
     private static final int MAX_GENERATION_ATTEMPTS = 100;
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -19,7 +20,7 @@ public final class TenantCodeGenerator {
     public static String generate() {
         StringBuilder sb = new StringBuilder(CODE_LENGTH);
         for (int i = 0; i < CODE_LENGTH; i++) {
-            sb.append(ALPHANUMERIC.charAt(RANDOM.nextInt(ALPHANUMERIC.length())));
+            sb.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
         }
         return sb.toString();
     }

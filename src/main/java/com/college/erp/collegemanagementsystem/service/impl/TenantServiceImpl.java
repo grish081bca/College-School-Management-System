@@ -183,4 +183,16 @@ public class TenantServiceImpl implements TenantService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @Override
+    public void deleteTenant(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Tenant id is required.");
+        }
+        Tenant tenant = tenantRepository.findTenantById(id);
+        if (tenant == null) {
+            throw new ResourceNotFoundException("Tenant not found for deletion.");
+        }
+        tenantRepository.delete(tenant);
+    }
 }

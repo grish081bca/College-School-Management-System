@@ -33,4 +33,6 @@ public interface TenantService {
     boolean existsByTenantCode(String tenantCode);
 
     TenantDTO changeTenantStatus(Long id, TenantStatus status);
+
+    void deleteTenant(Long id);
 }

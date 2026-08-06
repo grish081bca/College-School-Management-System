@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.college.erp.collegemanagementsystem.dto.request.TenantCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.TenantUpdateRequest;
 import com.college.erp.collegemanagementsystem.service.TenantService;
+import com.college.erp.collegemanagementsystem.exception.ResourceNotFoundException;
 
 /**
  * @author grish
@@ -82,6 +83,10 @@ public class TenantController {
         if (tenantCode == null) {
             return ResponseEntity.badRequest().body(RestResponseDTO.badRequest("Tenant Code is required"));
         }
+        // validate tenant code format: exactly 8 alphabetic characters
+        if (!tenantCode.matches("^[A-Za-z]{8}$")) {
+            return ResponseEntity.badRequest().body(RestResponseDTO.badRequest("Tenant Code must be exactly 8 alphabetic characters"));
+        }
         try {
             TenantDTO tenantDetail =  tenantService.getTenantByCode(tenantCode);
             return ResponseEntity.ok(RestResponseDTO.success("Tenant Found Successfully", tenantDetail));
@@ -115,6 +120,21 @@ public class TenantController {
             TenantDTO tenant = tenantService.changeTenantStatus(id, status);
             return ResponseEntity.ok(RestResponseDTO.success("Tenant Status Changed Successfully", tenant));
         }catch (Exception e){
+            return ResponseEntity.internalServerError().body(RestResponseDTO.internalServerError(e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<RestResponseDTO> deleteTenant(@PathVariable Long id) {
+        if (id == null) {
+            return ResponseEntity.badRequest().body(RestResponseDTO.badRequest("Tenant id is required."));
+        }
+        try {
+            tenantService.deleteTenant(id);
+            return ResponseEntity.ok(RestResponseDTO.success("Tenant deleted successfully", null));
+        }catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RestResponseDTO.failure(rnfe.getMessage()));
+        }catch (Exception e) {
             return ResponseEntity.internalServerError().body(RestResponseDTO.internalServerError(e.getMessage()));
         }
     }
