@@ -7,14 +7,6 @@
 <%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
     <form class="filter-grid" action="<c:url value='/web/menu-templates'/>" method="get">
-        <label>Tenant
-            <select name="tenantId">
-                <option value="">All tenants</option>
-                <c:forEach items="${tenants}" var="tenant">
-                    <option value="${tenant.id}" ${tenant.id == tenantId ? 'selected' : ''}>${tenant.tenantName}</option>
-                </c:forEach>
-            </select>
-        </label>
         <label>User type
             <select name="userType">
                 <option value="">All user types</option>
@@ -38,14 +30,13 @@
 <section class="panel">
     <div class="table-wrap">
         <table class="data-table">
-            <thead><tr><th>Template</th><th>Scope</th><th>User type</th><th>Menus</th><th>Status</th><th>Change status</th></tr></thead>
-            <tbody><c:forEach items="${page.objects}" var="template">
-                <tr>
-                    <td><c:out value="${template.name}"/></td>
-                    <td><c:out value="${template.tenantName}"/></td>
-                    <td><c:out value="${template.userType}"/></td>
-                    <td><c:out value="${template.menuName}"/></td>
-                    <td><c:out value="${template.status}"/></td>
+            <thead><tr><th>Template</th><th>User type</th><th>Menus</th><th>Status</th><th>Change status</th></tr></thead>
+                        <tbody><c:forEach items="${page.objects}" var="template">
+                            <tr>
+                                <td><c:out value="${template.name}"/></td>
+                                <td><c:out value="${template.userType}"/></td>
+                                <td><c:out value="${template.menuName}"/></td>
+                                <td><c:out value="${template.status}"/></td>
                     <td>
                         <form class="inline" action="<c:url value='/web/menu-templates/${template.id}/status'/>" method="post">
                             <select name="status"><c:forEach items="${statuses}" var="status"><option value="${status}" ${status == template.status ? 'selected' : ''}>${status}</option></c:forEach></select>

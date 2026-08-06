@@ -150,8 +150,6 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
         dto.setId(template.getId());
         dto.setName(template.getName());
         dto.setUserType(template.getUserType().name());
-        dto.setTenantId(template.getTenant() != null ? template.getTenant().getId() : null);
-        dto.setTenantName(template.getTenant() != null ? template.getTenant().getTenantName() : "Global");
         dto.setMenuIds(template.getMenus().stream().map(Menu::getId).toList());
         dto.setMenuNames(template.getMenus().stream().map(Menu::getName).toList());
         dto.setMenuName(String.join(", ", dto.getMenuNames()));

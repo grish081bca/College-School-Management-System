@@ -8,10 +8,6 @@
 <section class="form-panel">
     <form class="form-grid enterprise-form" action="<c:url value='/web/menu-templates'/>" method="post">
         <label>Template name<input name="templateName" required maxlength="150" placeholder="College admin menus"></label>
-        <label>Tenant<select name="tenantId">
-            <option value="">Global</option>
-            <c:forEach items="${tenants}" var="tenant"><option value="${tenant.id}">${tenant.tenantName}</option></c:forEach>
-        </select></label>
         <label>User type<select name="userType" required>
             <c:forEach items="${userTypes}" var="type"><option value="${type}">${type}</option></c:forEach>
         </select></label>
@@ -27,7 +23,7 @@
                         <span>
                             <c:choose>
                                 <c:when test="${empty menu.parentMenuName}"><c:out value="${menu.name}"/></c:when>
-                                <c:otherwise><c:out value="${menu.parentMenuName}"/> / <c:out value="${menu.menuName}"/></c:otherwise>
+                                <c:otherwise><c:out value="${menu.parentMenuName}"/> / <c:out value="${menu.name}"/></c:otherwise>
                             </c:choose>
                         </span>
                     </label>
