@@ -8,15 +8,12 @@ spring:
       auto-commit: true
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
     open-in-view: false
     properties:
       hibernate:
         format_sql: true
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
   application:
     name: Multi-Tenant College Management System
   mvc:

@@ -45,8 +45,8 @@ public class User extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tenant_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "tenant_id", nullable = true)
     private Tenant tenant;
 
     @Column(name = "username", nullable = false, length = 120)
@@ -102,9 +102,6 @@ public class User extends AuditableEntity {
     protected void ensureDefaults() {
         if (status == null) {
             status = UserStatus.ACTIVE;
-        }
-        if (userType == null) {
-            userType = UserType.COLLEGE_ADMIN;
         }
     }
 }

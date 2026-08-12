@@ -25,4 +25,40 @@ public final class ConvertUtils {
         String normalized = normalizeText(value);
         return normalized == null ? null : normalized.toUpperCase();
     }
+
+    // Conversion helpers for User entity <-> UserDTO
+    public static com.college.erp.collegemanagementsystem.dto.UserDTO toUserDTO(com.college.erp.collegemanagementsystem.entity.User user) {
+        if (user == null) return null;
+        com.college.erp.collegemanagementsystem.dto.UserDTO dto = new com.college.erp.collegemanagementsystem.dto.UserDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setFirstName(user.getFirstName());
+        dto.setMiddleName(user.getMiddleName());
+        dto.setLastName(user.getLastName());
+        // Do not expose password hash in DTO for security; leave null
+        dto.setPassword(null);
+        dto.setStatus(user.getStatus());
+        dto.setEnabled(user.isEnabled());
+        dto.setUserType(user.getUserType());
+        if (user.getTenant() != null) {
+            dto.setTenantId(user.getTenant().getId());
+            dto.setTenantName(user.getTenant().getTenantName());
+        }
+        if (user.getUserTemplate() != null) {
+            dto.setUserTemplateId(user.getUserTemplate().getId());
+            dto.setUserTemplateName(user.getUserTemplate().getUserTemplateName());
+        }
+        return dto;
+    }
+
+    public static java.util.List<com.college.erp.collegemanagementsystem.dto.UserDTO> toUserDTOList(java.util.List<com.college.erp.collegemanagementsystem.entity.User> users) {
+        java.util.List<com.college.erp.collegemanagementsystem.dto.UserDTO> list = new java.util.ArrayList<>();
+        if (users == null || users.isEmpty()) return list;
+        for (com.college.erp.collegemanagementsystem.entity.User u : users) {
+            list.add(toUserDTO(u));
+        }
+        return list;
+    }
 }
