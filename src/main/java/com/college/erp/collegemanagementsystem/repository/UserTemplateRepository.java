@@ -24,4 +24,7 @@ public interface UserTemplateRepository extends JpaRepository<UserTemplate, Long
 
     @EntityGraph(attributePaths = "menuTemplate")
     Optional<UserTemplate> findByUserType(UserType userType);
+
+    @EntityGraph(attributePaths = "menuTemplate")
+    List<UserTemplate> findAllByUserTypeOrderByIdAsc(UserType userType);
 }

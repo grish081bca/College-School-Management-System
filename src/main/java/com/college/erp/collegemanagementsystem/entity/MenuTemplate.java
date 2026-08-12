@@ -24,10 +24,6 @@ public class MenuTemplate extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenant_id")
-    private Tenant tenant;
-
     @Column(name = "name", nullable = false, length = 150)
     private String name;
 

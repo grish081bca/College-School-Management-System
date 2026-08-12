@@ -22,6 +22,9 @@ public interface MenuTemplateRepository extends JpaRepository<MenuTemplate, Long
 
     Optional<MenuTemplate> findByUserType(UserType userType);
 
+    @EntityGraph(attributePaths = {"menus", "menus.parentMenu"})
+    List<MenuTemplate> findAllByUserTypeOrderByIdAsc(UserType userType);
+
     @Query("""
             select mt from MenuTemplate mt
             join fetch mt.menus m
