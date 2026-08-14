@@ -1,6 +1,7 @@
 package com.college.erp.collegemanagementsystem.security;
 
 import com.college.erp.collegemanagementsystem.entity.User;
+import com.college.erp.collegemanagementsystem.entity.Tenant;
 import com.college.erp.collegemanagementsystem.enums.UserStatus;
 import com.college.erp.collegemanagementsystem.enums.UserType;
 import lombok.Getter;
@@ -62,11 +63,12 @@ public class AuthenticatedUserPrincipal implements UserDetails {
     }
 
     public static AuthenticatedUserPrincipal fromUser(User user, Collection<? extends GrantedAuthority> authorities) {
+        Tenant tenant = user.getTenant();
         return new AuthenticatedUserPrincipal(
                 user.getId(),
-                user.getTenant().getId(),
+                tenant != null ? tenant.getId() : null,
                 user.getUserTemplate() != null ? user.getUserTemplate().getId() : null,
-                user.getTenant().getTenantCode(),
+                tenant != null ? tenant.getTenantCode() : null,
                 user.getUsername(),
                 user.getPassword(),
                 user.isEnabled(),

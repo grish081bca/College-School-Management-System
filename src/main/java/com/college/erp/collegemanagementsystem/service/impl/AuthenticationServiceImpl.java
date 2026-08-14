@@ -187,6 +187,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private AuthResponse buildAuthResponse(User user) {
+        Tenant tenant = user.getTenant();
         return AuthResponse.builder()
                 .user(UserAuthResponse.builder()
                         .userId(user.getId())
@@ -195,12 +196,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         .fullName(buildFullName(user))
                         .userType(user.getUserType().name())
                         .build())
-                .tenant(TenantAuthResponse.builder()
-                        .tenantId(user.getTenant().getId())
-                        .tenantCode(user.getTenant().getTenantCode())
-                        .tenantName(user.getTenant().getTenantName())
-                        .tenantType(user.getTenant().getTenantType())
-                        .build())
+                .tenant(tenant != null ? TenantAuthResponse.builder()
+                        .tenantId(tenant.getId())
+                        .tenantCode(tenant.getTenantCode())
+                        .tenantName(tenant.getTenantName())
+                        .tenantType(tenant.getTenantType())
+                        .build() : null)
                 .build();
     }
 
