@@ -37,8 +37,37 @@ document.querySelectorAll('.menu-toggle').forEach(trigger => {
     });
 });
 
+function getGroupKey(group) {
+    return group.dataset.menuCode || group.dataset.menuId || null;
+}
+function getOpenGroups() {
+    return Array.from(document.querySelectorAll('.menu-group.open'))
+        .map(g => getGroupKey(g))
+        .filter(Boolean);
+}
+function saveOpenGroups() {
+    try { localStorage.setItem('erp.openMenuGroups', JSON.stringify(getOpenGroups())); } catch(e) {}
+}
+function restoreOpenGroups() {
+    try {
+        const raw = localStorage.getItem('erp.openMenuGroups');
+        if (!raw) return;
+        const arr = JSON.parse(raw);
+        if (!Array.isArray(arr)) return;
+        arr.forEach(code => {
+            const group = Array.from(document.querySelectorAll('.menu-group'))
+                .find(gg => (gg.dataset.menuCode || gg.dataset.menuId) == code);
+            if (group) group.classList.add('open');
+        });
+    } catch(e) {}
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
+    const appShell = document.getElementById('appShell');
+    if (appShell && !appShell.classList.contains('sidebar-collapsed')) {
+        restoreOpenGroups();
+    }
 });
 
 const appShell = document.getElementById('appShell');
@@ -53,12 +82,16 @@ if (appShell && sidebarToggle) {
     sidebarToggle.addEventListener('click', event => {
         event.stopPropagation();
         const collapsed = appShell.classList.toggle('sidebar-collapsed');
+        if (collapsed) {
+            saveOpenGroups();
+            document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
+        } else {
+            restoreOpenGroups();
+        }
         localStorage.setItem('erp.sidebarCollapsed', String(collapsed));
         sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
-        if (collapsed) {
-            document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
-        }
     });
+
 
     document.querySelectorAll('.super-menu').forEach(el => {
         el.addEventListener('click', function(e) {
@@ -73,11 +106,13 @@ if (appShell && sidebarToggle) {
                 if (group) {
                     document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
                     group.classList.add('open');
+                    saveOpenGroups();
                 }
             }
         });
     });
 }
+
 
 document.addEventListener('click', () => {
     document.querySelectorAll('.profile-menu.open').forEach(menu => {
