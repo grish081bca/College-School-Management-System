@@ -2,7 +2,6 @@ package com.college.erp.collegemanagementsystem.enums;
 
 public enum UserType {
     SUPER_ADMIN,
-    TENANT_ADMIN,
     COLLEGE_ADMIN,
     PRINCIPAL,
     TEACHER,
