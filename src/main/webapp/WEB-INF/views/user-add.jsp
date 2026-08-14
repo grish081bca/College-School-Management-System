@@ -33,7 +33,9 @@
             <select name="userTemplateId">
                 <option value="" ${user.userTemplateId == null ? 'selected' : ''}>None</option>
                 <c:forEach items="${userTemplates}" var="ut">
-                                    <option value="${ut.id}" ${user.userTemplateId != null and user.userTemplateId == ut.id ? 'selected' : ''}>${ut.name}</option>
+                    <option value="${ut.id}" ${user.userTemplateId != null and user.userTemplateId == ut.id ? 'selected' : ''}>
+                        ${ut.userType}<c:if test="${not empty ut.menuTemplateName}"> - ${ut.menuTemplateName}</c:if>
+                    </option>
                 </c:forEach>
             </select>
         </label>
