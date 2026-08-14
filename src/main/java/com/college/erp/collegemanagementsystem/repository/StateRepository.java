@@ -1,6 +1,7 @@
 package com.college.erp.collegemanagementsystem.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.college.erp.collegemanagementsystem.entity.State;
@@ -17,6 +18,8 @@ public interface StateRepository extends JpaRepository<State, Long>, JpaSpecific
     List<State> findAllByOrderByIdDesc();
 
     List<State> findAllByCountry_IdOrderByIdDesc(Long countryId);
+
+    Optional<State> findByNameIgnoreCaseAndCountry_Id(String name, Long countryId);
 
     boolean existsByNameIgnoreCaseAndCountry_Id(String name, Long countryId);
 

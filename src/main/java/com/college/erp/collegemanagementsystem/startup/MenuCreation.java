@@ -12,9 +12,7 @@ import com.college.erp.collegemanagementsystem.repository.MenuTemplateRepository
 import com.college.erp.collegemanagementsystem.repository.UserTemplateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class MenuCreation implements CommandLineRunner {
+public class MenuCreation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuCreation.class);
 
@@ -36,12 +34,6 @@ public class MenuCreation implements CommandLineRunner {
         this.menuRepository = menuRepository;
         this.menuTemplateRepository = menuTemplateRepository;
         this.userTemplateRepository = userTemplateRepository;
-    }
-
-    @Override
-    @Transactional
-    public void run(String... args) {
-        startupCreator();
     }
 
     public void startupCreator() {
@@ -123,7 +115,6 @@ public class MenuCreation implements CommandLineRunner {
 
         createTemplate(UserType.SUPER_ADMIN, "Super Admin Menu Template", allMenus, menus);
         createTemplate(UserType.SYSTEM_ADMIN, "System Admin Menu Template", allMenus, menus);
-        createTemplate(UserType.TENANT_ADMIN, "Tenant Admin Menu Template", tenantAdminMenus, menus);
         createTemplate(UserType.COLLEGE_ADMIN, "College Admin Menu Template", collegeAdminMenus, menus);
         createTemplate(UserType.COLLEGE_BRANCH, "College Branch Menu Template", staffMenus, menus);
         createTemplate(UserType.PRINCIPAL, "Principal Menu Template", staffMenus, menus);
