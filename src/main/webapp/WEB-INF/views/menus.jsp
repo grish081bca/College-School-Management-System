@@ -30,7 +30,7 @@
 <section class="panel">
     <div class="table-wrap">
         <table class="data-table">
-            <thead><tr><th>Code</th><th>Name</th><th>URL</th><th>Parent</th><th>Type</th><th>Status</th><th>Change status</th></tr></thead>
+            <thead><tr><th>Code</th><th>Name</th><th>URL</th><th>Parent</th><th>Type</th><th>Status</th></tr></thead>
             <tbody><c:forEach items="${page.objects}" var="menu">
                 <tr>
                     <td><c:out value="${menu.menuCode}"/></td>
@@ -39,12 +39,6 @@
                     <td><c:out value="${menu.parentMenuName}"/></td>
                     <td><c:out value="${menu.menuType}"/></td>
                     <td><c:out value="${menu.status}"/></td>
-                    <td>
-                        <form class="inline" action="<c:url value='/web/menus/${menu.id}/status'/>" method="post">
-                            <select name="status"><c:forEach items="${statuses}" var="status"><option value="${status}" ${status == menu.status ? 'selected' : ''}>${status}</option></c:forEach></select>
-                            <button class="secondary" type="submit">Save</button>
-                        </form>
-                    </td>
                 </tr>
             </c:forEach></tbody>
         </table>

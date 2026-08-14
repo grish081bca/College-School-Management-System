@@ -22,7 +22,7 @@
 <section class="panel">
     <div class="table-wrap">
         <table class="data-table">
-            <thead><tr><th>Code</th><th>Name</th><th>Contact</th><th>Location</th><th>Status</th><th>Change status</th></tr></thead>
+            <thead><tr><th>Code</th><th>Name</th><th>Contact</th><th>Location</th><th>Status</th></tr></thead>
             <tbody><c:forEach items="${page.objects}" var="tenant">
                 <tr>
                     <td><c:out value="${tenant.tenantCode}"/></td>
@@ -30,12 +30,6 @@
                     <td><c:out value="${tenant.contactEmail}"/><br><c:out value="${tenant.contactPhone}"/></td>
                     <td><c:out value="${tenant.cityName}"/>, <c:out value="${tenant.stateName}"/></td>
                     <td><c:out value="${tenant.status}"/></td>
-                    <td>
-                        <form class="inline" action="<c:url value='/web/tenants/${tenant.id}/status'/>" method="post">
-                            <select name="status"><c:forEach items="${statuses}" var="status"><option value="${status}" ${status == tenant.status ? 'selected' : ''}>${status}</option></c:forEach></select>
-                            <button class="secondary" type="submit">Save</button>
-                        </form>
-                    </td>
                 </tr>
             </c:forEach></tbody>
         </table>

@@ -30,18 +30,12 @@
 <section class="panel">
     <div class="table-wrap">
         <table class="data-table">
-            <thead><tr><th>User type</th><th>Menu template</th><th>Status</th><th>Change status</th></tr></thead>
+            <thead><tr><th>User type</th><th>Menu template</th><th>Status</th></tr></thead>
             <tbody><c:forEach items="${page.objects}" var="template">
                 <tr>
                     <td><c:out value="${template.userType}"/></td>
                     <td><c:out value="${empty template.menuTemplateName ? 'Default' : template.menuTemplateName}"/></td>
                     <td><c:out value="${template.status}"/></td>
-                    <td>
-                        <form class="inline" action="<c:url value='/web/user-templates/${template.id}/status'/>" method="post">
-                            <select name="status"><c:forEach items="${statuses}" var="status"><option value="${status}" ${status == template.status ? 'selected' : ''}>${status}</option></c:forEach></select>
-                            <button class="secondary" type="submit">Save</button>
-                        </form>
-                    </td>
                 </tr>
             </c:forEach></tbody>
         </table>
