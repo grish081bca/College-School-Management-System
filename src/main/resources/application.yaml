@@ -23,8 +23,6 @@ spring:
   web:
     resources:
       static-locations: classpath:/static/
-
-server:
-  error:
-    include-message: always
-    include-stacktrace: always
+    error:
+      include-message: always
+      include-stacktrace: always
