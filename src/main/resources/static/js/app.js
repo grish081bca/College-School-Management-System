@@ -37,6 +37,10 @@ document.querySelectorAll('.menu-toggle').forEach(trigger => {
     });
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
+});
+
 const appShell = document.getElementById('appShell');
 const sidebarToggle = document.querySelector('.sidebar-toggle');
 if (appShell && sidebarToggle) {

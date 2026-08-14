@@ -21,7 +21,7 @@
         <nav class="sidebar-nav">
             <c:forEach items="${allowedMenus}" var="superMenu">
                 <c:if test="${empty superMenu.parentMenuId}">
-                    <div class="menu-group open">
+                    <div class="menu-group">
                         <c:choose>
                             <c:when test="${not empty superMenu.menuUrl}">
                                 <a class="super-menu" href="<c:url value='${superMenu.menuUrl}'/>">
