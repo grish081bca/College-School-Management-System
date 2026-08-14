@@ -21,10 +21,35 @@
                     <div class="menu-group open">
                         <c:choose>
                             <c:when test="${not empty superMenu.menuUrl}">
-                                <a class="super-menu" href="<c:url value='${superMenu.menuUrl}'/>"><c:out value="${superMenu.name}"/></a>
+                                <a class="super-menu" href="<c:url value='${superMenu.menuUrl}'/>">
+                                    <span class="icon-placeholder">
+                                        <c:choose>
+                                            <c:when test="${not empty superMenu.icon}">
+                                                <i class="<c:out value='${superMenu.icon}' />" aria-hidden="true"></i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fa-solid fa-circle" aria-hidden="true"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </span>
+                                    <span class="menu-text"><c:out value="${superMenu.name}"/></span>
+                                </a>
                             </c:when>
                             <c:otherwise>
-                                <button class="super-menu menu-toggle" type="button"><span><c:out value="${superMenu.name}"/></span><span class="menu-caret">v</span></button>
+                                <button class="super-menu menu-toggle" type="button">
+                                    <span class="icon-placeholder">
+                                        <c:choose>
+                                            <c:when test="${not empty superMenu.icon}">
+                                                <i class="<c:out value='${superMenu.icon}' />" aria-hidden="true"></i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fa-solid fa-folder" aria-hidden="true"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </span>
+                                    <span class="menu-text"><c:out value="${superMenu.name}"/></span>
+                                    <span class="menu-caret">v</span>
+                                </button>
                             </c:otherwise>
                         </c:choose>
                         <div class="sub-menu-list">
@@ -42,7 +67,7 @@
     <div class="main-area">
         <header class="content-header">
             <div class="header-title">
-                <button class="icon-button sidebar-toggle" type="button" aria-label="Toggle sidebar" aria-expanded="true">Menu</button>
+                <button class="icon-button sidebar-toggle" type="button" aria-label="Toggle sidebar" aria-expanded="true"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
                 <div>
                     <span class="meta-label">Current page</span>
                     <strong><c:out value="${currentPageName}"/></strong>
