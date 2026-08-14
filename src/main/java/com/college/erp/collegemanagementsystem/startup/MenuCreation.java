@@ -57,31 +57,40 @@ public class MenuCreation implements CommandLineRunner {
         Map<String, Menu> createdMenus = new LinkedHashMap<>();
 
         List<MenuSeed> menuSeeds = List.of(
-                superMenu("DASHBOARD", "Dashboard", "/web/dashboard", "layout-dashboard", 10),
+                superMenu("HOME", "Home", null, "layout-dashboard", 10),
+                subMenu("DASHBOARD", "Dashboard", "/web/dashboard", "HOME", 11),
 
-                superMenu("TENANT_MANAGEMENT", "Tenant Management", null, "building-2", 20),
-                subMenu("TENANTS_LIST", "List Tenants", "/web/tenants", "TENANT_MANAGEMENT", 21),
-                subMenu("TENANTS_ADD", "Add Tenant", "/web/tenants/add", "TENANT_MANAGEMENT", 22),
+                superMenu("TENANT", "Tenant", null, "building-2", 20),
+                subMenu("TENANTS_LIST", "List Tenants", "/web/tenants", "TENANT", 21),
+                subMenu("TENANTS_ADD", "Add Tenant", "/web/tenants/add", "TENANT", 22),
 
-                superMenu("USER_MANAGEMENT", "User Management", null, "users", 30),
-                subMenu("USERS_LIST", "List Users", "/web/users", "USER_MANAGEMENT", 31),
-                subMenu("USERS_ADD", "Add User", "/web/users/add", "USER_MANAGEMENT", 32),
-                subMenu("USER_TEMPLATES_LIST", "List User Templates", "/web/user-templates", "USER_MANAGEMENT", 33),
-                subMenu("USER_TEMPLATES_ADD", "Add User Template", "/web/user-templates/add", "USER_MANAGEMENT", 34),
+                superMenu("USER", "User", null, "users", 30),
+                subMenu("USERS_LIST", "List Users", "/web/users", "USER", 31),
+                subMenu("USERS_ADD", "Add User", "/web/users/add", "USER", 32),
 
-                superMenu("ACCESS_ADMINISTRATION", "Access Administration", null, "shield-check", 40),
-                subMenu("MENUS_LIST", "List Menus", "/web/menus", "ACCESS_ADMINISTRATION", 41),
-                subMenu("MENUS_ADD", "Add Menu", "/web/menus/add", "ACCESS_ADMINISTRATION", 42),
-                subMenu("MENU_TEMPLATES_LIST", "List Menu Templates", "/web/menu-templates", "ACCESS_ADMINISTRATION", 43),
-                subMenu("MENU_TEMPLATES_ADD", "Add Menu Template", "/web/menu-templates/add", "ACCESS_ADMINISTRATION", 44),
+                superMenu("MENU", "Menu", null, "shield-check", 40),
+                subMenu("MENUS_LIST", "List Menus", "/web/menus", "MENU", 41),
+                subMenu("MENUS_ADD", "Add Menu", "/web/menus/add", "MENU", 42),
 
-                superMenu("LOCATION_SETUP", "Location Setup", null, "map-pin", 50),
-                subMenu("COUNTRIES_LIST", "List Countries", "/web/countries", "LOCATION_SETUP", 51),
-                subMenu("COUNTRIES_ADD", "Add Country", "/web/countries/add", "LOCATION_SETUP", 52),
-                subMenu("STATES_LIST", "List States", "/web/states", "LOCATION_SETUP", 53),
-                subMenu("STATES_ADD", "Add State", "/web/states/add", "LOCATION_SETUP", 54),
-                subMenu("CITIES_LIST", "List Cities", "/web/cities", "LOCATION_SETUP", 55),
-                subMenu("CITIES_ADD", "Add City", "/web/cities/add", "LOCATION_SETUP", 56)
+                superMenu("COUNTRY", "Country", null, "map-pin", 50),
+                subMenu("COUNTRIES_LIST", "List Countries", "/web/countries", "COUNTRY", 51),
+                subMenu("COUNTRIES_ADD", "Add Country", "/web/countries/add", "COUNTRY", 52),
+
+                superMenu("USER_TEMPLATE", "User Template", null, "users", 60),
+                subMenu("USER_TEMPLATES_LIST", "List User Templates", "/web/user-templates", "USER_TEMPLATE", 61),
+                subMenu("USER_TEMPLATES_ADD", "Add User Template", "/web/user-templates/add", "USER_TEMPLATE", 62),
+
+                superMenu("MENU_TEMPLATE", "Menu Template", null, "shield-check", 70),
+                subMenu("MENU_TEMPLATES_LIST", "List Menu Templates", "/web/menu-templates", "MENU_TEMPLATE", 71),
+                subMenu("MENU_TEMPLATES_ADD", "Add Menu Template", "/web/menu-templates/add", "MENU_TEMPLATE", 72),
+
+                superMenu("STATE", "State", null, "map-pin", 80),
+                subMenu("STATES_LIST", "List States", "/web/states", "STATE", 81),
+                subMenu("STATES_ADD", "Add State", "/web/states/add", "STATE", 82),
+
+                superMenu("CITY", "City", null, "map-pin", 90),
+                subMenu("CITIES_LIST", "List Cities", "/web/cities", "CITY", 91),
+                subMenu("CITIES_ADD", "Add City", "/web/cities/add", "CITY", 91)
         );
 
         for (MenuSeed seed : menuSeeds) {
@@ -104,16 +113,12 @@ public class MenuCreation implements CommandLineRunner {
     private void createMenuTemplates(Map<String, Menu> menus) {
         List<String> allMenus = new ArrayList<>(menus.keySet());
         List<String> collegeAdminMenus = List.of(
-                "DASHBOARD",
-                "USER_MANAGEMENT", "USERS_LIST", "USERS_ADD", "USER_TEMPLATES_LIST", "USER_TEMPLATES_ADD",
-                "LOCATION_SETUP", "COUNTRIES_LIST", "COUNTRIES_ADD", "STATES_LIST", "STATES_ADD", "CITIES_LIST", "CITIES_ADD"
+                "DASHBOARD"
         );
         List<String> tenantAdminMenus = List.of(
-                "DASHBOARD",
-                "USER_MANAGEMENT", "USERS_LIST", "USERS_ADD", "USER_TEMPLATES_LIST", "USER_TEMPLATES_ADD",
-                "LOCATION_SETUP", "COUNTRIES_LIST", "STATES_LIST", "CITIES_LIST"
+                "DASHBOARD"
         );
-        List<String> staffMenus = List.of("DASHBOARD", "USER_MANAGEMENT", "USERS_LIST");
+        List<String> staffMenus = List.of("DASHBOARD");
         List<String> basicMenus = List.of("DASHBOARD");
 
         createTemplate(UserType.SUPER_ADMIN, "Super Admin Menu Template", allMenus, menus);
