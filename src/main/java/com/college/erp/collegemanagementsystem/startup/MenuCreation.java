@@ -49,38 +49,38 @@ public class MenuCreation {
         Map<String, Menu> createdMenus = new LinkedHashMap<>();
 
         List<MenuSeed> menuSeeds = List.of(
-                superMenu("HOME", "Home", null, "layout-dashboard", 10),
+                superMenu("HOME", "Home", null, "fa-solid fa-house", 10),
                 subMenu("DASHBOARD", "Dashboard", "/web/dashboard", "HOME", 11),
 
-                superMenu("TENANT", "Tenant", null, "building-2", 20),
+                superMenu("TENANT", "Tenant", null, "fa-solid fa-building", 20),
                 subMenu("TENANTS_LIST", "List Tenants", "/web/tenants", "TENANT", 21),
                 subMenu("TENANTS_ADD", "Add Tenant", "/web/tenants/add", "TENANT", 22),
 
-                superMenu("USER", "User", null, "users", 30),
+                superMenu("USER", "User", null, "fa-solid fa-users", 30),
                 subMenu("USERS_LIST", "List Users", "/web/users", "USER", 31),
                 subMenu("USERS_ADD", "Add User", "/web/users/add", "USER", 32),
 
-                superMenu("MENU", "Menu", null, "shield-check", 40),
+                superMenu("MENU", "Menu", null, "fa-solid fa-shield-halved", 40),
                 subMenu("MENUS_LIST", "List Menus", "/web/menus", "MENU", 41),
                 subMenu("MENUS_ADD", "Add Menu", "/web/menus/add", "MENU", 42),
 
-                superMenu("COUNTRY", "Country", null, "map-pin", 50),
+                superMenu("COUNTRY", "Country", null, "fa-solid fa-map-pin", 50),
                 subMenu("COUNTRIES_LIST", "List Countries", "/web/countries", "COUNTRY", 51),
                 subMenu("COUNTRIES_ADD", "Add Country", "/web/countries/add", "COUNTRY", 52),
 
-                superMenu("USER_TEMPLATE", "User Template", null, "users", 60),
+                superMenu("USER_TEMPLATE", "User Template", null, "fa-solid fa-user-tag", 60),
                 subMenu("USER_TEMPLATES_LIST", "List User Templates", "/web/user-templates", "USER_TEMPLATE", 61),
                 subMenu("USER_TEMPLATES_ADD", "Add User Template", "/web/user-templates/add", "USER_TEMPLATE", 62),
 
-                superMenu("MENU_TEMPLATE", "Menu Template", null, "shield-check", 70),
+                superMenu("MENU_TEMPLATE", "Menu Template", null, "fa-solid fa-shield", 70),
                 subMenu("MENU_TEMPLATES_LIST", "List Menu Templates", "/web/menu-templates", "MENU_TEMPLATE", 71),
                 subMenu("MENU_TEMPLATES_ADD", "Add Menu Template", "/web/menu-templates/add", "MENU_TEMPLATE", 72),
 
-                superMenu("STATE", "State", null, "map-pin", 80),
+                superMenu("STATE", "State", null, "fa-solid fa-map-pin", 80),
                 subMenu("STATES_LIST", "List States", "/web/states", "STATE", 81),
                 subMenu("STATES_ADD", "Add State", "/web/states/add", "STATE", 82),
 
-                superMenu("CITY", "City", null, "map-pin", 90),
+                superMenu("CITY", "City", null, "fa-solid fa-city", 90),
                 subMenu("CITIES_LIST", "List Cities", "/web/cities", "CITY", 91),
                 subMenu("CITIES_ADD", "Add City", "/web/cities/add", "CITY", 91)
         );
@@ -91,7 +91,8 @@ public class MenuCreation {
             menu.setMenuCode(seed.code());
             menu.setName(seed.name());
             menu.setMenuUrl(seed.url());
-            menu.setIcon(seed.icon());
+            String icon = seed.icon() != null ? seed.icon() : (parentMenu != null ? parentMenu.getIcon() : null);
+            menu.setIcon(icon);
             menu.setParentMenu(parentMenu);
             menu.setDisplayOrder(seed.displayOrder());
             menu.setStatus(MenuStatus.ACTIVE);
