@@ -72,9 +72,12 @@ body {
 
 .app-shell.sidebar-collapsed .logo-text,
 .app-shell.sidebar-collapsed .sub-menu-list,
-.app-shell.sidebar-collapsed .menu-caret,
-.app-shell.sidebar-collapsed .super-menu span:first-child {
+.app-shell.sidebar-collapsed .menu-caret {
     display: none;
+}
+.app-shell.sidebar-collapsed .super-menu .icon-placeholder,
+.app-shell.sidebar-collapsed .super-menu .icon-placeholder i {
+    display: inline-block;
 }
 
 .sidebar-nav {

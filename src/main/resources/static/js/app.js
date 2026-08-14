@@ -23,8 +23,17 @@ document.querySelectorAll('.profile-trigger').forEach(trigger => {
 });
 
 document.querySelectorAll('.menu-toggle').forEach(trigger => {
-    trigger.addEventListener('click', () => {
-        trigger.closest('.menu-group').classList.toggle('open');
+    trigger.addEventListener('click', (e) => {
+        const group = trigger.closest('.menu-group');
+        if (!group) return;
+        const isCollapsed = appShell && appShell.classList.contains('sidebar-collapsed');
+        if (isCollapsed) {
+            appShell.classList.remove('sidebar-collapsed');
+            localStorage.setItem('erp.sidebarCollapsed', 'false');
+            document.querySelectorAll('.sidebar-toggle').forEach(t => t.setAttribute('aria-expanded', 'true'));
+        }
+        group.classList.toggle('open');
+        if (e.target && e.target.tagName === 'BUTTON') e.preventDefault();
     });
 });
 
@@ -35,12 +44,34 @@ if (appShell && sidebarToggle) {
     if (storedState === 'true') {
         appShell.classList.add('sidebar-collapsed');
         sidebarToggle.setAttribute('aria-expanded', 'false');
+        document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
     }
     sidebarToggle.addEventListener('click', event => {
         event.stopPropagation();
         const collapsed = appShell.classList.toggle('sidebar-collapsed');
         localStorage.setItem('erp.sidebarCollapsed', String(collapsed));
         sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+        if (collapsed) {
+            document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
+        }
+    });
+
+    document.querySelectorAll('.super-menu').forEach(el => {
+        el.addEventListener('click', function(e) {
+            if (appShell.classList.contains('sidebar-collapsed')) {
+                if (e.target && (e.target.tagName === 'A' || e.target.closest('a'))) {
+                    e.preventDefault();
+                }
+                appShell.classList.remove('sidebar-collapsed');
+                localStorage.setItem('erp.sidebarCollapsed', 'false');
+                document.querySelectorAll('.sidebar-toggle').forEach(t => t.setAttribute('aria-expanded', 'true'));
+                const group = el.closest('.menu-group');
+                if (group) {
+                    document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
+                    group.classList.add('open');
+                }
+            }
+        });
     });
 }
 
