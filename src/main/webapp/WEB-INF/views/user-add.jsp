@@ -2,7 +2,6 @@
 <section class="panel">
     <div class="panel-header">
         <h2><c:out value="${user.id != null ? 'Edit user' : 'Add user'}"/></h2>
-        <a class="secondary" href="<c:url value='/web/users'/>">Back to list</a>
     </div>
     <c:set var="formAction" value="/web/users"/>
     <c:if test="${user.id != null}"><c:set var="formAction" value="/web/users/${user.id}"/></c:if>

@@ -33,6 +33,7 @@ document.querySelectorAll('.menu-toggle').forEach(trigger => {
             document.querySelectorAll('.sidebar-toggle').forEach(t => t.setAttribute('aria-expanded', 'true'));
         }
         group.classList.toggle('open');
+        saveOpenGroups();
         if (e.target && e.target.tagName === 'BUTTON') e.preventDefault();
     });
 });
@@ -62,12 +63,42 @@ function restoreOpenGroups() {
     } catch(e) {}
 }
 
+function normalizePath(path) {
+    if (!path) return '';
+    return path.replace(/\/+$/, '') || '/';
+}
+
+function findCurrentMenuLink() {
+    const currentPath = normalizePath(window.location.pathname);
+    return Array.from(document.querySelectorAll('.sidebar-nav a[href]')).find(link => {
+        try {
+            const linkPath = normalizePath(new URL(link.href, window.location.origin).pathname);
+            return linkPath === currentPath;
+        } catch(e) {
+            return false;
+        }
+    });
+}
+
+function applyCurrentMenuState() {
+    const activeLink = findCurrentMenuLink();
+    if (!activeLink) return;
+    activeLink.classList.add('active');
+    activeLink.setAttribute('aria-current', 'page');
+    const activeGroup = activeLink.closest('.menu-group');
+    if (activeGroup) {
+        activeGroup.classList.add('open');
+        saveOpenGroups();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
     const appShell = document.getElementById('appShell');
     if (appShell && !appShell.classList.contains('sidebar-collapsed')) {
         restoreOpenGroups();
     }
+    applyCurrentMenuState();
 });
 
 const appShell = document.getElementById('appShell');
@@ -75,9 +106,8 @@ const sidebarToggle = document.querySelector('.sidebar-toggle');
 if (appShell && sidebarToggle) {
     const storedState = localStorage.getItem('erp.sidebarCollapsed');
     if (storedState === 'true') {
-        appShell.classList.add('sidebar-collapsed');
-        sidebarToggle.setAttribute('aria-expanded', 'false');
-        document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
+        localStorage.setItem('erp.sidebarCollapsed', 'false');
+        sidebarToggle.setAttribute('aria-expanded', 'true');
     }
     sidebarToggle.addEventListener('click', event => {
         event.stopPropagation();
@@ -87,6 +117,7 @@ if (appShell && sidebarToggle) {
             document.querySelectorAll('.menu-group.open').forEach(g => g.classList.remove('open'));
         } else {
             restoreOpenGroups();
+            applyCurrentMenuState();
         }
         localStorage.setItem('erp.sidebarCollapsed', String(collapsed));
         sidebarToggle.setAttribute('aria-expanded', String(!collapsed));

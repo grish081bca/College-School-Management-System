@@ -141,6 +141,16 @@ body {
     background: #2563eb;
 }
 
+.sub-menu.active,
+.super-menu.active {
+    background: #2563eb;
+    color: #fff;
+}
+
+.sub-menu.active {
+    font-weight: 700;
+}
+
 .main-area {
     min-width: 0;
 }
