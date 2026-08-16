@@ -10,13 +10,17 @@ import com.college.erp.collegemanagementsystem.enums.TenantStatus;
 
 /**
  * @author grish
+ *
  */
-
 public interface TenantService {
 
     TenantDTO createTenant(TenantCreateRequest request);
 
-    TenantDTO updateTenant(Long id, TenantUpdateRequest request);
+    TenantDTO updateTenant(Long id, TenantUpdateRequest request, String remarks);
+
+    default TenantDTO updateTenant(Long id, TenantUpdateRequest request) {
+        return updateTenant(id, request, null);
+    }
 
     TenantDTO getTenantById(Long id);
 
@@ -32,7 +36,11 @@ public interface TenantService {
 
     boolean existsByTenantCode(String tenantCode);
 
-    TenantDTO changeTenantStatus(Long id, TenantStatus status);
+    TenantDTO changeTenantStatus(Long id, TenantStatus status, String remarks);
+
+    default TenantDTO changeTenantStatus(Long id, TenantStatus status) {
+        return changeTenantStatus(id, status, null);
+    }
 
     void deleteTenant(Long id);
 }

@@ -64,13 +64,14 @@
                             <i class="fa-solid fa-eye" aria-hidden="true"></i>
                             <span>View</span>
                         </a>
-                        <form class="inline" action="<c:url value='/web/tenants/${tenant.id}/status'/>" method="post">
-                            <input type="hidden" name="status" value="${tenant.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'}">
-                            <button class="action-button secondary" type="submit" title="Change tenant status" aria-label="Change tenant status">
-                                <i class="fa-solid fa-toggle-on" aria-hidden="true"></i>
-                                <span>Change status</span>
-                            </button>
-                        </form>
+                        <button class="action-button secondary tenant-status-trigger" type="button"
+                                data-action="<c:url value='/web/tenants/${tenant.id}/status'/>"
+                                data-status="${tenant.status}"
+                                data-name="<c:out value='${tenant.tenantName}'/>"
+                                title="Change tenant status" aria-label="Change tenant status">
+                            <i class="fa-solid fa-toggle-on" aria-hidden="true"></i>
+                            <span>Change status</span>
+                        </button>
                     </td>
                 </tr>
             </c:forEach></tbody>
@@ -79,4 +80,56 @@
     <%@ include file="fragments/data-table-empty.jspf" %>
     <%@ include file="fragments/pagination.jspf" %>
 </section>
+<dialog class="status-dialog" id="tenantStatusDialog">
+    <form id="tenantStatusForm" method="post">
+        <div class="dialog-header">
+            <h2>Change tenant status</h2>
+            <button class="icon-button dialog-close" type="button" aria-label="Close dialog">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <p class="muted" id="tenantStatusName"></p>
+        <label>Status
+            <select name="status" id="tenantStatusSelect" required>
+                <c:forEach items="${statuses}" var="status">
+                    <option value="${status}">${status}</option>
+                </c:forEach>
+            </select>
+        </label>
+        <label>Remarks (optional)
+            <textarea name="remarks" rows="3"></textarea>
+        </label>
+        <div class="form-actions dialog-actions">
+            <button class="primary" type="submit">Update status</button>
+            <button class="secondary dialog-close" type="button">Cancel</button>
+        </div>
+    </form>
+</dialog>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var dialog = document.getElementById('tenantStatusDialog');
+        var form = document.getElementById('tenantStatusForm');
+        var statusSelect = document.getElementById('tenantStatusSelect');
+        var tenantName = document.getElementById('tenantStatusName');
+
+        document.querySelectorAll('.tenant-status-trigger').forEach(function (button) {
+            button.addEventListener('click', function () {
+                form.action = button.dataset.action;
+                statusSelect.value = button.dataset.status;
+                tenantName.textContent = button.dataset.name || '';
+                if (dialog.showModal) {
+                    dialog.showModal();
+                } else {
+                    dialog.setAttribute('open', 'open');
+                }
+            });
+        });
+
+        document.querySelectorAll('.dialog-close').forEach(function (button) {
+            button.addEventListener('click', function () {
+                dialog.close();
+            });
+        });
+    });
+</script>
 <%@ include file="fragments/footer.jspf" %>

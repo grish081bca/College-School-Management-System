@@ -15,8 +15,8 @@ import com.college.erp.collegemanagementsystem.exception.ResourceNotFoundExcepti
 
 /**
  * @author grish
+ *
  */
-
 @RestController
 @RequestMapping("/api/v1/tenants")
 public class TenantController {
@@ -53,12 +53,14 @@ public class TenantController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<RestResponseDTO> updateTenant(@Param("id") Long id, @Valid @RequestBody TenantUpdateRequest request) {
+    public ResponseEntity<RestResponseDTO> updateTenant(@Param("id") Long id,
+                                                        @RequestParam(required = false) String remarks,
+                                                        @Valid @RequestBody TenantUpdateRequest request) {
         if (id == null) {
             return ResponseEntity.badRequest().body(RestResponseDTO.badRequest("Tenant must be provided."));
         }
         try {
-            TenantDTO response = tenantService.updateTenant(id, request);
+            TenantDTO response = tenantService.updateTenant(id, request, remarks);
             return ResponseEntity.ok(RestResponseDTO.success("Tenant Updated Successfully", response));
         }catch (Exception e) {
             return ResponseEntity.internalServerError().body(RestResponseDTO.internalServerError(e.getMessage()));
@@ -109,7 +111,9 @@ public class TenantController {
     }
 
     @PutMapping("/changeStatus")
-    public ResponseEntity<RestResponseDTO> changeTenantStatus(@Param("id") Long id, @Param("status") TenantStatus status) {
+    public ResponseEntity<RestResponseDTO> changeTenantStatus(@Param("id") Long id,
+                                                              @Param("status") TenantStatus status,
+                                                              @RequestParam(required = false) String remarks) {
         if (id == null) {
             return ResponseEntity.badRequest().body(RestResponseDTO.badRequest("Tenant Id is required"));
         }
@@ -117,7 +121,7 @@ public class TenantController {
             return ResponseEntity.badRequest().body(RestResponseDTO.badRequest("Status is required"));
         }
         try {
-            TenantDTO tenant = tenantService.changeTenantStatus(id, status);
+            TenantDTO tenant = tenantService.changeTenantStatus(id, status, remarks);
             return ResponseEntity.ok(RestResponseDTO.success("Tenant Status Changed Successfully", tenant));
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(RestResponseDTO.internalServerError(e.getMessage()));

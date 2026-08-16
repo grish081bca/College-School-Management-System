@@ -35,6 +35,9 @@
         </select></label>
         <label>Address line 1 (optional)<input name="addressLine1" value="<c:out value='${tenantRequest.addressLine1}'/>"></label>
         <label>Address line 2 (optional)<input name="addressLine2" value="<c:out value='${tenantRequest.addressLine2}'/>"></label>
+        <c:if test="${isEdit}">
+            <label>Remarks (optional)<textarea name="remarks" rows="3"></textarea></label>
+        </c:if>
         <div class="form-actions">
             <button class="primary" type="submit">${isEdit ? 'Update tenant' : 'Add tenant'}</button>
             <a class="button secondary" href="<c:url value='/web/tenants'/>">Cancel</a>

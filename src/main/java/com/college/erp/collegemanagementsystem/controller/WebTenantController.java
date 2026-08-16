@@ -12,6 +12,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebTenantController {
     private final TenantService service;
@@ -25,7 +29,6 @@ public class WebTenantController {
         this.states = states;
         this.cities = cities;
     }
-
     @GetMapping("/web/tenants")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) TenantStatus status,
@@ -54,13 +57,11 @@ public class WebTenantController {
         }
         m.addAttribute("isEdit", false);
     }
-
     @GetMapping("/web/tenants/add")
     public String addForm(Model m) {
         add(m);
         return "tenant-add";
     }
-
     @PostMapping("/web/tenants")
     public String create(@Valid @ModelAttribute("tenantRequest") TenantCreateRequest r, BindingResult b, Model m, RedirectAttributes a) {
         if (b.hasErrors()) {
@@ -71,7 +72,6 @@ public class WebTenantController {
         a.addFlashAttribute("success", "Tenant created successfully.");
         return "redirect:/web/tenants";
     }
-
     @GetMapping("/web/tenants/{id}/edit")
     public String editForm(@PathVariable Long id, Model m, RedirectAttributes a) {
         try {
@@ -87,18 +87,19 @@ public class WebTenantController {
             return "redirect:/web/tenants";
         }
     }
-
     @PostMapping("/web/tenants/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute("tenantRequest") TenantUpdateRequest r, RedirectAttributes a) {
+    public String update(@PathVariable Long id,
+                         @ModelAttribute("tenantRequest") TenantUpdateRequest r,
+                         @RequestParam(required = false) String remarks,
+                         RedirectAttributes a) {
         try {
-            service.updateTenant(id, r);
+            service.updateTenant(id, r, remarks);
             a.addFlashAttribute("success", "Tenant updated successfully.");
         } catch (Exception e) {
             a.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/web/tenants";
     }
-
     @GetMapping("/web/tenants/{id}")
     public String view(@PathVariable Long id, Model m, RedirectAttributes a) {
         try {
@@ -109,10 +110,12 @@ public class WebTenantController {
             return "redirect:/web/tenants";
         }
     }
-
     @PostMapping("/web/tenants/{id}/status")
-    public String status(@PathVariable Long id, @RequestParam TenantStatus status, RedirectAttributes a) {
-        service.changeTenantStatus(id, status);
+    public String status(@PathVariable Long id,
+                         @RequestParam TenantStatus status,
+                         @RequestParam(required = false) String remarks,
+                         RedirectAttributes a) {
+        service.changeTenantStatus(id, status, remarks);
         a.addFlashAttribute("success", "Tenant status updated successfully.");
         return "redirect:/web/tenants";
     }

@@ -411,13 +411,18 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
     width: 100%;
     font: inherit;
     border: 1px solid #cbd5e1;
     border-radius: 7px;
     padding: 10px;
     background: #fff;
+}
+
+textarea {
+    resize: vertical;
 }
 
 .checkbox-field {
@@ -575,6 +580,35 @@ th {
 
 .action-button i {
     font-size: 14px;
+}
+
+.status-dialog {
+    width: min(420px, calc(100% - 32px));
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 20px;
+    color: #182230;
+    box-shadow: 0 24px 70px #1720333d;
+}
+
+.status-dialog::backdrop {
+    background: #0f172a73;
+}
+
+.dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.dialog-header h2 {
+    margin: 0;
+}
+
+.dialog-actions {
+    margin-top: 18px;
 }
 
 .inline {
