@@ -12,6 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * @author grish
+ *
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -20,7 +24,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,14 +31,12 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return toPrincipal(user);
     }
-
     @Transactional(readOnly = true)
     public AuthenticatedUserPrincipal loadByTenantIdAndUsername(Long tenantId, String username) {
         User user = userRepository.findByTenant_IdAndUsernameIgnoreCase(tenantId, username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return toPrincipal(user);
     }
-
     @Transactional(readOnly = true)
     public AuthenticatedUserPrincipal loadByUserId(Long userId) {
         User user = userRepository.findById(userId)

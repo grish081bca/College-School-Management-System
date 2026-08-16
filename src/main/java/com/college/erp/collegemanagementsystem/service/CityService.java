@@ -8,8 +8,8 @@ import com.college.erp.collegemanagementsystem.dto.request.CityUpdateRequest;
 
 /**
  * @author grish
+ *
  */
-
 public interface CityService {
 
     CityDTO createCity(CityCreateRequest request);

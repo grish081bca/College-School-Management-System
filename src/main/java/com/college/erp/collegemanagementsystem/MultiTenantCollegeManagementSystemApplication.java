@@ -6,10 +6,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
+/**
+ * @author grish
+ *
+ */
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class MultiTenantCollegeManagementSystemApplication extends SpringBootServletInitializer {
-
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(MultiTenantCollegeManagementSystemApplication.class);

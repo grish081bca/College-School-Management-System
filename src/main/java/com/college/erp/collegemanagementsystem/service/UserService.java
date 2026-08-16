@@ -6,6 +6,10 @@ import com.college.erp.collegemanagementsystem.enums.UserStatus;
 
 import java.util.Optional;
 
+/**
+ * @author grish
+ *
+ */
 public interface UserService {
     PagablePage<UserDTO> findPage(String q, UserStatus status, Integer page, Integer size);
 

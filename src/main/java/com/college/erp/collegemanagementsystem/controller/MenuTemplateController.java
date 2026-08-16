@@ -8,6 +8,10 @@ import com.college.erp.collegemanagementsystem.service.MenuTemplateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author grish
+ *
+ */
 @RestController
 @RequestMapping("/api/v1/menu-templates")
 public class MenuTemplateController {
@@ -17,12 +21,10 @@ public class MenuTemplateController {
     public MenuTemplateController(MenuTemplateService menuTemplateService) {
         this.menuTemplateService = menuTemplateService;
     }
-
     @PostMapping
     public ResponseEntity<RestResponseDTO> assign(@RequestBody MenuTemplateDTO dto) {
         return ResponseEntity.ok(RestResponseDTO.success("Menu template assigned successfully", menuTemplateService.assignMenuTemplate(dto)));
     }
-
     @GetMapping
     public ResponseEntity<RestResponseDTO> list(@RequestParam(required = false) String q,
                                                 @RequestParam(required = false) UserType userType,
@@ -31,7 +33,6 @@ public class MenuTemplateController {
                                                 @RequestParam(defaultValue = "10") Integer size) {
         return ResponseEntity.ok(RestResponseDTO.success("Menu templates found successfully", menuTemplateService.findPage(q, userType, status, page, size)));
     }
-
     @GetMapping("/menus")
     public ResponseEntity<RestResponseDTO> menus(@RequestParam UserType userType) {
         return ResponseEntity.ok(RestResponseDTO.success("Menus found successfully", menuTemplateService.findMenusByUserType(userType)));

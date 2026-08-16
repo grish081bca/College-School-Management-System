@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author grish
+ *
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -24,28 +28,23 @@ public class AuthController {
     public AuthController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
-
     @PostMapping("/register")
     public ResponseEntity<RestResponseDTO> register(@Valid @RequestBody RegisterRequest request) {
         return new ResponseEntity<>(RestResponseDTO.success("User registered successfully", authenticationService.register(request)), HttpStatus.CREATED);
     }
-
     @PostMapping("/login")
     public ResponseEntity<RestResponseDTO> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(RestResponseDTO.success("Login successful", authenticationService.login(request)));
     }
-
     @PostMapping("/change-password")
     public ResponseEntity<RestResponseDTO> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authenticationService.changePassword(request);
         return ResponseEntity.ok(RestResponseDTO.success("Password changed successfully"));
     }
-
     @PostMapping("/forgot-password")
     public ResponseEntity<RestResponseDTO> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         return ResponseEntity.ok(RestResponseDTO.success("Password reset token generated", authenticationService.forgotPassword(request)));
     }
-
     @PostMapping("/reset-password")
     public ResponseEntity<RestResponseDTO> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         authenticationService.resetPassword(request);

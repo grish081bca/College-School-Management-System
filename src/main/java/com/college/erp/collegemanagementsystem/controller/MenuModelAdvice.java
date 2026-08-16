@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 @ControllerAdvice
 public class MenuModelAdvice {
 
@@ -23,7 +27,6 @@ public class MenuModelAdvice {
         this.menuTemplateService = menuTemplateService;
         this.userRepository = userRepository;
     }
-
     @ModelAttribute
     public void addMenus(Model model, Authentication authentication, HttpServletRequest request) {
         if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUserPrincipal principal)) {

@@ -8,6 +8,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author grish
+ *
+ */
 public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificationExecutor<Menu> {
     Optional<Menu> findByMenuCodeIgnoreCase(String menuCode);
 

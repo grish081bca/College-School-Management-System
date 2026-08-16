@@ -11,8 +11,8 @@ import com.college.erp.collegemanagementsystem.repository.TenantRepository;
 
 /**
  * @author grish
+ *
  */
-
 @Component
 public class TenantValidationService {
 

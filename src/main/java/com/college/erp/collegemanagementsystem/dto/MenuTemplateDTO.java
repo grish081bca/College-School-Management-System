@@ -6,6 +6,10 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 @Getter
 @Setter
 public class MenuTemplateDTO {

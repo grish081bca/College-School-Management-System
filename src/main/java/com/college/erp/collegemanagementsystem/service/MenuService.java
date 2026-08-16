@@ -7,6 +7,10 @@ import com.college.erp.collegemanagementsystem.enums.MenuType;
 
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 public interface MenuService {
     MenuDTO save(MenuDTO dto);
 

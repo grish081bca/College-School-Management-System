@@ -9,6 +9,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebCountryController {
     private final CountryService service;
@@ -16,7 +20,6 @@ public class WebCountryController {
     public WebCountryController(CountryService service) {
         this.service = service;
     }
-
     @GetMapping("/web/countries")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(defaultValue = "1") Integer page,
@@ -29,13 +32,11 @@ public class WebCountryController {
         WebPagination.add(m, "/web/countries", size, filters);
         return "countries";
     }
-
     @GetMapping("/web/countries/add")
     public String add(Model m) {
         m.addAttribute("countryRequest", new CountryCreateRequest());
         return "country-add";
     }
-
     @PostMapping("/web/countries")
     public String create(@Valid @ModelAttribute("countryRequest") CountryCreateRequest r, BindingResult b, RedirectAttributes a) {
         if (b.hasErrors()) return "country-add";
@@ -43,7 +44,6 @@ public class WebCountryController {
         a.addFlashAttribute("success", "Country created successfully.");
         return "redirect:/web/countries";
     }
-
     @PostMapping("/web/countries/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes a) {
         service.deleteCountry(id);

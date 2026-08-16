@@ -6,8 +6,8 @@ import lombok.Setter;
 
 /**
  * @author grish
+ *
  */
-
 @Getter
 @Setter
 public class CityUpdateRequest {

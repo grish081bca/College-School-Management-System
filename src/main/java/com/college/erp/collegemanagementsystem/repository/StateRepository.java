@@ -10,8 +10,6 @@ import com.college.erp.collegemanagementsystem.entity.State;
  * @author grish
  *
  */
-
-
 public interface StateRepository extends JpaRepository<State, Long>, JpaSpecificationExecutor<State> {
     State findStateById(Long id);
 

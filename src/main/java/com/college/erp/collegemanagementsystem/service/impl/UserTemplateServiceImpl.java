@@ -18,6 +18,10 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 @Service
 @Transactional
 public class UserTemplateServiceImpl implements UserTemplateService {
@@ -30,7 +34,6 @@ public class UserTemplateServiceImpl implements UserTemplateService {
         this.userTemplateRepository = userTemplateRepository;
         this.menuTemplateRepository = menuTemplateRepository;
     }
-
     @Override
     public UserTemplateDTO assignUserTemplate(UserTemplateDTO dto) {
         if (dto == null || dto.getUserType() == null) {
@@ -48,7 +51,6 @@ public class UserTemplateServiceImpl implements UserTemplateService {
         template.setStatus(dto.getStatus() == null || dto.getStatus().isBlank() ? UserStatus.ACTIVE : UserStatus.valueOf(dto.getStatus()));
         return toDto(userTemplateRepository.save(template));
     }
-
     @Override
     public UserTemplateDTO changeStatus(Long id, UserStatus status) {
         UserTemplate template = userTemplateRepository.findById(id)
@@ -56,13 +58,11 @@ public class UserTemplateServiceImpl implements UserTemplateService {
         template.setStatus(status);
         return toDto(userTemplateRepository.save(template));
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<UserTemplateDTO> findAll() {
         return userTemplateRepository.findAllByOrderByIdDesc().stream().map(this::toDto).toList();
     }
-
     @Override
     @Transactional(readOnly = true)
     public PagablePage<UserTemplateDTO> findPage(String search, UserType userType, UserStatus status, Integer page, Integer size) {
@@ -83,7 +83,6 @@ public class UserTemplateServiceImpl implements UserTemplateService {
         };
         return PagablePage.from(userTemplateRepository.findAll(specification, pageRequest).map(this::toDto));
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<UserTemplateDTO> findActive() {
@@ -91,7 +90,6 @@ public class UserTemplateServiceImpl implements UserTemplateService {
                 .map(this::toDto)
                 .toList();
     }
-
     @Override
     @Transactional(readOnly = true)
     public boolean canCreateUserType(UserType userType) {

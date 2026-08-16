@@ -16,7 +16,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * @author grish
  *
  */
-
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AuditableEntity {

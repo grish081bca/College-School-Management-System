@@ -5,6 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebDashboardController {
     private final TenantService tenants;
@@ -18,7 +22,6 @@ public class WebDashboardController {
         this.states = states;
         this.cities = cities;
     }
-
     @GetMapping("/web/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("tenantCount", tenants.getAllTenants().size());

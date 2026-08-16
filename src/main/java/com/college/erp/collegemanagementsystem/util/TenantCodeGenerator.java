@@ -5,8 +5,8 @@ import java.util.function.Predicate;
 
 /**
  * @author grish
+ *
  */
-
 public final class TenantCodeGenerator {
     // Restrict to uppercase alphabet only per requirement (8 characters, letters only)
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

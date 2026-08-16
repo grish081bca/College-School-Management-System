@@ -10,7 +10,6 @@ import java.util.Optional;
  * @author grish
  *
  */
-
 public interface CountryRepository extends JpaRepository<Country, Long>, JpaSpecificationExecutor<Country> {
     Country findCountryById(Long id);
 

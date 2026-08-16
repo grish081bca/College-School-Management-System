@@ -18,8 +18,8 @@ import com.college.erp.collegemanagementsystem.mapper.TenantMapper;
 
 /**
  * @author grish
+ *
  */
-
 @Component
 public class TenantMapperImpl implements TenantMapper {
 

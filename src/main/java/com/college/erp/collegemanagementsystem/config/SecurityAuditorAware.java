@@ -7,9 +7,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * @author grish
+ *
+ */
 @Component
 public class SecurityAuditorAware implements AuditorAware<String> {
-
     @Override
     public Optional<String> getCurrentAuditor() {
         try {

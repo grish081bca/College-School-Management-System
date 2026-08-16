@@ -10,6 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebUserTemplateController {
 
@@ -21,7 +25,6 @@ public class WebUserTemplateController {
         this.userTemplateService = userTemplateService;
         this.menuTemplateService = menuTemplateService;
     }
-
     @GetMapping("/web/user-templates")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) UserType userType,
@@ -42,20 +45,17 @@ public class WebUserTemplateController {
         WebPagination.add(model, "/web/user-templates", size, filters);
         return "user-templates";
     }
-
     @GetMapping("/web/user-templates/add")
     public String addForm(Model model) {
         add(model);
         return "user-template-add";
     }
-
     @PostMapping("/web/user-templates")
     public String save(@ModelAttribute UserTemplateDTO dto, RedirectAttributes attributes) {
         userTemplateService.assignUserTemplate(dto);
         attributes.addFlashAttribute("success", "User template saved successfully.");
         return "redirect:/web/user-templates";
     }
-
     @PostMapping("/web/user-templates/{id}/status")
     public String status(@PathVariable Long id, @RequestParam UserStatus status, RedirectAttributes attributes) {
         userTemplateService.changeStatus(id, status);

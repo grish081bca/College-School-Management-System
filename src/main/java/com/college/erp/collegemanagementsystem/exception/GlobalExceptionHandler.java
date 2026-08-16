@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * @author grish
+ *
  */
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

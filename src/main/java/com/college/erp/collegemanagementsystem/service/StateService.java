@@ -8,8 +8,8 @@ import com.college.erp.collegemanagementsystem.dto.request.StateUpdateRequest;
 
 /**
  * @author grish
+ *
  */
-
 public interface StateService {
 
     StateDTO createState(StateCreateRequest request);

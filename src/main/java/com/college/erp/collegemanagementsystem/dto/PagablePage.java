@@ -7,6 +7,10 @@ import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 @Getter
 @Setter
 public class PagablePage<T> {

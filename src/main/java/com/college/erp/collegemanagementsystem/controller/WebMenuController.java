@@ -9,6 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebMenuController {
 
@@ -17,7 +21,6 @@ public class WebMenuController {
     public WebMenuController(MenuService menuService) {
         this.menuService = menuService;
     }
-
     @GetMapping("/web/menus")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) MenuStatus status,
@@ -38,20 +41,17 @@ public class WebMenuController {
         WebPagination.add(model, "/web/menus", size, filters);
         return "menus";
     }
-
     @GetMapping("/web/menus/add")
     public String addForm(Model model) {
         add(model);
         return "menu-add";
     }
-
     @PostMapping("/web/menus")
     public String save(@ModelAttribute MenuDTO dto, RedirectAttributes attributes) {
         menuService.save(dto);
         attributes.addFlashAttribute("success", "Menu saved successfully.");
         return "redirect:/web/menus";
     }
-
     @PostMapping("/web/menus/{id}/status")
     public String status(@PathVariable Long id, @RequestParam MenuStatus status, RedirectAttributes attributes) {
         menuService.changeStatus(id, status);

@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebAuthController {
 
@@ -17,27 +21,22 @@ public class WebAuthController {
     public WebAuthController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
-
     @GetMapping("/")
     public String home() {
         return "redirect:/login";
     }
-
     @GetMapping("/login")
     public String login() {
         return "login";
     }
-
     @GetMapping("/web/my-profile")
     public String myProfile() {
         return "my-profile";
     }
-
     @GetMapping("/web/change-password")
     public String changePasswordForm() {
         return "change-password";
     }
-
     @PostMapping("/web/change-password")
     public String changePassword(@ModelAttribute ChangePasswordRequest request, RedirectAttributes attributes) {
         try {
@@ -49,12 +48,10 @@ public class WebAuthController {
             return "redirect:/web/change-password";
         }
     }
-
     @GetMapping("/web/reset-password")
     public String resetPasswordForm() {
         return "reset-password";
     }
-
     @PostMapping("/web/reset-password")
     public String resetPassword(@ModelAttribute ResetPasswordRequest request, RedirectAttributes attributes) {
         try {

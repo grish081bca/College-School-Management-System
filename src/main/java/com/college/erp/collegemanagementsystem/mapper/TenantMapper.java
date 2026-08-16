@@ -10,8 +10,8 @@ import com.college.erp.collegemanagementsystem.dto.response.TenantResponse;
 
 /**
  * @author grish
+ *
  */
-
 public interface TenantMapper {
 
     Tenant toEntity(TenantCreateRequest request);

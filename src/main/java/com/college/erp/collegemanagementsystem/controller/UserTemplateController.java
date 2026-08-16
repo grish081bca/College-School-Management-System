@@ -8,6 +8,10 @@ import com.college.erp.collegemanagementsystem.service.UserTemplateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author grish
+ *
+ */
 @RestController
 @RequestMapping("/api/v1/user-templates")
 public class UserTemplateController {
@@ -17,12 +21,10 @@ public class UserTemplateController {
     public UserTemplateController(UserTemplateService userTemplateService) {
         this.userTemplateService = userTemplateService;
     }
-
     @PostMapping
     public ResponseEntity<RestResponseDTO> assign(@RequestBody UserTemplateDTO dto) {
         return ResponseEntity.ok(RestResponseDTO.success("User template assigned successfully", userTemplateService.assignUserTemplate(dto)));
     }
-
     @GetMapping
     public ResponseEntity<RestResponseDTO> list(@RequestParam(required = false) String q,
                                                 @RequestParam(required = false) UserType userType,

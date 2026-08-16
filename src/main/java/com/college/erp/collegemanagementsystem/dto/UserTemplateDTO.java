@@ -3,6 +3,10 @@ package com.college.erp.collegemanagementsystem.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author grish
+ *
+ */
 @Getter
 @Setter
 public class UserTemplateDTO {

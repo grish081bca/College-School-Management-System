@@ -24,7 +24,6 @@ import lombok.Setter;
  * @author grish
  *
  */
-
 @Entity
 @Getter
 @Setter

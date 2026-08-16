@@ -1,5 +1,9 @@
 package com.college.erp.collegemanagementsystem.enums;
 
+/**
+ * @author grish
+ *
+ */
 public enum UserType {
     SUPER_ADMIN,
     COLLEGE_ADMIN,

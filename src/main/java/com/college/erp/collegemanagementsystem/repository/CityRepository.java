@@ -10,8 +10,6 @@ import com.college.erp.collegemanagementsystem.entity.City;
  * @author grish
  *
  */
-
-
 public interface CityRepository extends JpaRepository<City, Long>, JpaSpecificationExecutor<City> {
     City findCityById(Long id);
 

@@ -10,6 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebMenuTemplateController {
 
@@ -20,7 +24,6 @@ public class WebMenuTemplateController {
         this.menuTemplateService = menuTemplateService;
         this.menuService = menuService;
     }
-
     @GetMapping("/web/menu-templates")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) UserType userType,
@@ -41,20 +44,17 @@ public class WebMenuTemplateController {
         WebPagination.add(model, "/web/menu-templates", size, filters);
         return "menu-templates";
     }
-
     @GetMapping("/web/menu-templates/add")
     public String addForm(Model model) {
         add(model);
         return "menu-template-add";
     }
-
     @PostMapping("/web/menu-templates")
     public String save(@ModelAttribute MenuTemplateDTO dto, RedirectAttributes attributes) {
         menuTemplateService.assignMenuTemplate(dto);
         attributes.addFlashAttribute("success", "Menu template saved successfully.");
         return "redirect:/web/menu-templates";
     }
-
     @PostMapping("/web/menu-templates/{id}/status")
     public String status(@PathVariable Long id, @RequestParam MenuStatus status, RedirectAttributes attributes) {
         menuTemplateService.changeStatus(id, status);

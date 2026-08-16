@@ -16,6 +16,10 @@ import lombok.Setter;
 
 import java.time.OffsetDateTime;
 
+/**
+ * @author grish
+ *
+ */
 @Entity
 @Getter
 @Setter
@@ -27,27 +31,20 @@ import java.time.OffsetDateTime;
         }
 )
 public class PasswordResetToken extends AuditableEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "token_hash", nullable = false, length = 64)
     private String tokenHash;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
     @Column(name = "expires_at", nullable = false)
     private OffsetDateTime expiresAt;
-
     @Column(name = "used_at")
     private OffsetDateTime usedAt;
-
     @Column(name = "revoked_at")
     private OffsetDateTime revokedAt;
-
     @Column(name = "revoked", nullable = false)
     private boolean revoked = false;
 }

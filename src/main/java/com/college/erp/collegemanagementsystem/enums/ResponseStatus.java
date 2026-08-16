@@ -2,8 +2,8 @@ package com.college.erp.collegemanagementsystem.enums;
 
 /**
  * @author grish
+ *
  */
-
 public enum ResponseStatus {
     SUCCESS("M0000", "Success"),
 

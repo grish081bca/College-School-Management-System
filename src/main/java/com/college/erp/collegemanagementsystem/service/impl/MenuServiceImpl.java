@@ -17,6 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 @Service
 @Transactional
 public class MenuServiceImpl implements MenuService {
@@ -26,7 +30,6 @@ public class MenuServiceImpl implements MenuService {
     public MenuServiceImpl(MenuRepository menuRepository) {
         this.menuRepository = menuRepository;
     }
-
     @Override
     public MenuDTO save(MenuDTO dto) {
         validate(dto, null);
@@ -34,7 +37,6 @@ public class MenuServiceImpl implements MenuService {
         copy(dto, menu);
         return toDto(menuRepository.save(menu));
     }
-
     @Override
     public MenuDTO update(Long id, MenuDTO dto) {
         validate(dto, id);
@@ -42,13 +44,11 @@ public class MenuServiceImpl implements MenuService {
         copy(dto, menu);
         return toDto(menuRepository.save(menu));
     }
-
     @Override
     @Transactional(readOnly = true)
     public MenuDTO findOne(Long id) {
         return toDto(getMenu(id));
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<MenuDTO> findAll() {
@@ -56,7 +56,6 @@ public class MenuServiceImpl implements MenuService {
                 .map(this::toDto)
                 .toList();
     }
-
     @Override
     @Transactional(readOnly = true)
     public PagablePage<MenuDTO> findPage(String search, MenuStatus status, MenuType menuType, Integer page, Integer size) {
@@ -81,7 +80,6 @@ public class MenuServiceImpl implements MenuService {
         };
         return PagablePage.from(menuRepository.findAll(specification, pageRequest).map(this::toDto));
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<MenuDTO> findActive() {
@@ -89,7 +87,6 @@ public class MenuServiceImpl implements MenuService {
                 .map(this::toDto)
                 .toList();
     }
-
     @Override
     public MenuDTO changeStatus(Long id, MenuStatus status) {
         Menu menu = getMenu(id);

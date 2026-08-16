@@ -14,6 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
+/**
+ * @author grish
+ *
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -21,19 +25,16 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
-
     @Bean
     public DaoAuthenticationProvider authenticationProvider(CustomUserDetailsService service, PasswordEncoder encoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(service);
         provider.setPasswordEncoder(encoder);
         return provider;
     }
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, DaoAuthenticationProvider provider) throws Exception {
         return http.csrf(csrf -> csrf.disable())

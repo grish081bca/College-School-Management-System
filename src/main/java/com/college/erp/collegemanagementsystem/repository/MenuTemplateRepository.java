@@ -12,19 +12,19 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author grish
+ *
+ */
 public interface MenuTemplateRepository extends JpaRepository<MenuTemplate, Long>, JpaSpecificationExecutor<MenuTemplate> {
-
     @EntityGraph(attributePaths = {"menus", "menus.parentMenu"})
     List<MenuTemplate> findAllByOrderByIdDesc();
-
     @EntityGraph(attributePaths = {"menus", "menus.parentMenu"})
     List<MenuTemplate> findAllByOrderByNameAsc();
 
     Optional<MenuTemplate> findByUserType(UserType userType);
-
     @EntityGraph(attributePaths = {"menus", "menus.parentMenu"})
     List<MenuTemplate> findAllByUserTypeOrderByIdAsc(UserType userType);
-
     @Query("""
             select mt from MenuTemplate mt
             join fetch mt.menus m

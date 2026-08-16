@@ -23,6 +23,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author grish
+ *
+ */
 @Service
 @Transactional
 public class MenuTemplateServiceImpl implements MenuTemplateService {
@@ -38,7 +42,6 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
         this.menuRepository = menuRepository;
         this.userTemplateRepository = userTemplateRepository;
     }
-
     @Override
     public MenuTemplateDTO assignMenuTemplate(MenuTemplateDTO dto) {
         if (dto == null || dto.getUserType() == null || dto.getUserType().isBlank()) {
@@ -67,7 +70,6 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
         template.setStatus(dto.getStatus() == null || dto.getStatus().isBlank() ? MenuStatus.ACTIVE : MenuStatus.valueOf(dto.getStatus()));
         return toDto(menuTemplateRepository.save(template));
     }
-
     @Override
     public MenuTemplateDTO changeStatus(Long id, MenuStatus status) {
         MenuTemplate template = menuTemplateRepository.findById(id)
@@ -75,13 +77,11 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
         template.setStatus(status);
         return toDto(menuTemplateRepository.save(template));
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<MenuTemplateDTO> findAll() {
         return menuTemplateRepository.findAllByOrderByIdDesc().stream().map(this::toDto).toList();
     }
-
     @Override
     @Transactional(readOnly = true)
     public PagablePage<MenuTemplateDTO> findPage(String search, UserType userType, MenuStatus status, Integer page, Integer size) {
@@ -108,7 +108,6 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
         };
         return PagablePage.from(menuTemplateRepository.findAll(specification, pageRequest).map(this::toDto));
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<MenuDTO> findMenusByUserType(UserType userType) {
@@ -124,7 +123,6 @@ public class MenuTemplateServiceImpl implements MenuTemplateService {
         }
         return List.copyOf(menus.values());
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<MenuDTO> findMenusForUserTemplate(Long userTemplateId, UserType userType) {

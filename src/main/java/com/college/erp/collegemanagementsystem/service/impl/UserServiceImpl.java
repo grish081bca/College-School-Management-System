@@ -22,6 +22,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+/**
+ * @author grish
+ *
+ */
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -40,7 +44,6 @@ public class UserServiceImpl implements UserService {
         this.userTemplateRepository = userTemplateRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
     @Override
     @Transactional(readOnly = true)
     public PagablePage<UserDTO> findPage(String q, UserStatus status, Integer page, Integer size) {
@@ -49,7 +52,6 @@ public class UserServiceImpl implements UserService {
         Page<UserDTO> dtoPage = entities.map(ConvertUtils::toUserDTO);
         return PagablePage.from(dtoPage);
     }
-
     @Override
     public UserDTO create(UserDTO userDto, Long tenantId, Long userTemplateId) {
         if (userDto == null) {
@@ -90,7 +92,6 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(user);
         return ConvertUtils.toUserDTO(saved);
     }
-
     @Override
     public UserDTO update(Long id, UserDTO userDto, Long tenantId, Long userTemplateId) {
         if (id == null) {
@@ -128,14 +129,12 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(user);
         return ConvertUtils.toUserDTO(saved);
     }
-
     @Override
     @Transactional(readOnly = true)
     public Optional<UserDTO> findById(Long id) {
         if (id == null) return Optional.empty();
         return userRepository.findById(id).map(ConvertUtils::toUserDTO);
     }
-
     @Override
     public void changeStatus(Long id, UserStatus status) {
         if (id == null) throw new IllegalArgumentException("User id is required");

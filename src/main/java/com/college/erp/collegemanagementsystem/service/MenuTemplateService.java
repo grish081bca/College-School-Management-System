@@ -8,6 +8,10 @@ import com.college.erp.collegemanagementsystem.enums.UserType;
 
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 public interface MenuTemplateService {
     MenuTemplateDTO assignMenuTemplate(MenuTemplateDTO dto);
 

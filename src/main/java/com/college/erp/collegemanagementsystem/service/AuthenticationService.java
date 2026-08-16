@@ -8,6 +8,10 @@ import com.college.erp.collegemanagementsystem.dto.request.ResetPasswordRequest;
 import com.college.erp.collegemanagementsystem.dto.response.AuthResponse;
 import com.college.erp.collegemanagementsystem.dto.response.PasswordResetResponse;
 
+/**
+ * @author grish
+ *
+ */
 public interface AuthenticationService {
 
     AuthResponse register(RegisterRequest request);

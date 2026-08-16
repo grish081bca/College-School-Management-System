@@ -13,6 +13,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebUserController {
     private final com.college.erp.collegemanagementsystem.service.UserService userService;
@@ -26,7 +30,6 @@ public class WebUserController {
         this.tenantService = tenantService;
         this.userTemplateService = userTemplateService;
     }
-
     @GetMapping("/web/users")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) UserStatus status,
@@ -52,13 +55,11 @@ public class WebUserController {
         m.addAttribute("statuses", UserStatus.values());
         m.addAttribute("user", new UserDTO());
     }
-
     @GetMapping("/web/users/add")
     public String addForm(Model m) {
         addModelAttributes(m);
         return "user-add";
     }
-
     @PostMapping("/web/users")
     public String create(@ModelAttribute UserDTO user,
                          @RequestParam(required = false) Long tenantId,
@@ -73,7 +74,6 @@ public class WebUserController {
         }
         return "redirect:/web/users";
     }
-
     @GetMapping("/web/users/{id}/edit")
     public String editForm(@PathVariable Long id, Model m, RedirectAttributes attributes) {
         Optional<UserDTO> u = userService.findById(id);
@@ -85,7 +85,6 @@ public class WebUserController {
         m.addAttribute("user", u.get());
         return "user-add"; // reuse add form for edit
     }
-
     @PostMapping("/web/users/{id}")
     public String update(@PathVariable Long id,
                          @ModelAttribute UserDTO formUser,
@@ -100,7 +99,6 @@ public class WebUserController {
         }
         return "redirect:/web/users";
     }
-
     @GetMapping("/web/users/{id}")
     public String view(@PathVariable Long id, Model m, RedirectAttributes attributes) {
         Optional<UserDTO> u = userService.findById(id);
@@ -111,7 +109,6 @@ public class WebUserController {
         m.addAttribute("user", u.get());
         return "user-detail";
     }
-
     @PostMapping("/web/users/{id}/status")
     public String status(@PathVariable Long id, @RequestParam UserStatus status, RedirectAttributes attributes) {
         try {

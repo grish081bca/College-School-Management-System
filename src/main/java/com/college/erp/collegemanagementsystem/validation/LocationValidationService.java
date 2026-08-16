@@ -15,8 +15,8 @@ import java.util.Optional;
 
 /**
  * @author grish
+ *
  */
-
 @Service
 @Transactional(readOnly = true)
 public class LocationValidationService {

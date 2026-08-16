@@ -9,6 +9,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * @author grish
+ *
+ */
 @Controller
 public class WebStateController {
     private final StateService service;
@@ -18,7 +22,6 @@ public class WebStateController {
         this.service = service;
         this.countries = countries;
     }
-
     @GetMapping("/web/states")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) Long countryId,
@@ -41,13 +44,11 @@ public class WebStateController {
         m.addAttribute("countries", countries.getAllCountries());
         m.addAttribute("stateRequest", new StateCreateRequest());
     }
-
     @GetMapping("/web/states/add")
     public String addForm(Model m) {
         add(m);
         return "state-add";
     }
-
     @PostMapping("/web/states")
     public String create(@Valid @ModelAttribute("stateRequest") StateCreateRequest r, BindingResult b, Model m, RedirectAttributes a) {
         if (b.hasErrors()) {
@@ -58,7 +59,6 @@ public class WebStateController {
         a.addFlashAttribute("success", "State created successfully.");
         return "redirect:/web/states";
     }
-
     @PostMapping("/web/states/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes a) {
         service.deleteState(id);

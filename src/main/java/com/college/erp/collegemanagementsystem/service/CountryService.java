@@ -8,8 +8,8 @@ import com.college.erp.collegemanagementsystem.dto.request.CountryUpdateRequest;
 
 /**
  * @author grish
+ *
  */
-
 public interface CountryService {
 
     CountryDTO createCountry(CountryCreateRequest request);

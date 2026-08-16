@@ -4,6 +4,10 @@ import com.college.erp.collegemanagementsystem.enums.TenantType;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * @author grish
+ *
+ */
 @Getter
 @Builder
 public class TenantAuthResponse {

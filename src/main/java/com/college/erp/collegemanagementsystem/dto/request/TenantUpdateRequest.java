@@ -8,8 +8,8 @@ import lombok.Setter;
 
 /**
  * @author grish
+ *
  */
-
 @Setter
 @Getter
 public class TenantUpdateRequest {

@@ -7,6 +7,10 @@ import com.college.erp.collegemanagementsystem.enums.UserType;
 
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 public interface UserTemplateService {
     UserTemplateDTO assignUserTemplate(UserTemplateDTO dto);
 

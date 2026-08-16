@@ -9,6 +9,10 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author grish
+ *
+ */
 @Entity
 @Getter
 @Setter
@@ -19,18 +23,14 @@ import java.util.List;
                 @Index(name = "idx_menu_templates_status", columnList = "status")
         })
 public class MenuTemplate extends AuditableEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "name", nullable = false, length = 150)
     private String name;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false, length = 50)
     private UserType userType;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "menu_template_menus",
@@ -39,7 +39,6 @@ public class MenuTemplate extends AuditableEntity {
     )
     @OrderBy("displayOrder ASC, name ASC")
     private List<Menu> menus = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private MenuStatus status = MenuStatus.ACTIVE;

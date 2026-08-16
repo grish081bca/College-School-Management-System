@@ -1,5 +1,9 @@
 package com.college.erp.collegemanagementsystem.enums;
 
+/**
+ * @author grish
+ *
+ */
 public enum UserRole {
     SUPER_ADMIN,
     TENANT_ADMIN,

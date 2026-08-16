@@ -23,6 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author grish
+ *
+ */
 @Component
 public class ApplicationStartupInitializer implements CommandLineRunner {
 
@@ -62,7 +66,6 @@ public class ApplicationStartupInitializer implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
         this.menuCreation = menuCreation;
     }
-
     @Override
     @Transactional
     public void run(String... args) {

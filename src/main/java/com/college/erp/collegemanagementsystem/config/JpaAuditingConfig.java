@@ -8,6 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
+/**
+ * @author grish
+ *
+ */
 @Configuration
 @EnableJpaAuditing(dateTimeProviderRef = "offsetDateTimeProvider")
 public class JpaAuditingConfig {

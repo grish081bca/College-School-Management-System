@@ -11,7 +11,6 @@ import com.college.erp.collegemanagementsystem.entity.Tenant;
  * @author grish
  *
  */
-
 public interface TenantRepository extends JpaRepository<Tenant, Long>, JpaSpecificationExecutor<Tenant> {
 
     Optional<Tenant> findByTenantCodeIgnoreCase(String tenantCode);

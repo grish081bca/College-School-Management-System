@@ -37,6 +37,10 @@ import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+/**
+ * @author grish
+ *
+ */
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -63,7 +67,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.userTemplateService = userTemplateService;
         this.userTemplateRepository = userTemplateRepository;
     }
-
     @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -102,7 +105,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User savedUser = userRepository.save(user);
         return buildAuthResponse(savedUser);
     }
-
     @Override
     @Transactional
     public AuthResponse login(LoginRequest request) {
@@ -118,7 +120,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(user);
         return buildAuthResponse(user);
     }
-
     @Override
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
@@ -137,7 +138,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPasswordResetRequired(false);
         userRepository.save(user);
     }
-
     @Override
     @Transactional
     public PasswordResetResponse forgotPassword(ForgotPasswordRequest request) {
@@ -163,7 +163,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .message("Password reset token generated")
                 .build();
     }
-
     @Override
     @Transactional
     public void resetPassword(ResetPasswordRequest request) {

@@ -7,24 +7,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
+/**
+ * @author grish
+ *
+ */
 public interface UserRepository extends JpaRepository<User, Long> {
-
     @Override
     @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findById(Long id);
-
     @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByUsernameIgnoreCase(String username);
-
     @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByEmailIgnoreCase(String email);
-
     @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByTenant_TenantCodeIgnoreCaseAndUsernameIgnoreCase(String tenantCode, String username);
-
     @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByTenant_IdAndUsernameIgnoreCase(Long tenantId, String username);
-
     @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findByTenant_TenantCodeIgnoreCaseAndEmailIgnoreCase(String tenantCode, String email);
 
