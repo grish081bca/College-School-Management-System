@@ -1,0 +1,12 @@
+.git
+.gitignore
+.idea
+*.md
+.mvn
+mvnw
+mvnw.cmd
+target
+.DS_Store
+*.log
+.env.local
+.env.*.local
