@@ -24,8 +24,11 @@ public class TenantDTO {
     private String contactPhoneSecondary;
     private String addressLine1;
     private String addressLine2;
+    private Long countryId;
     private String countryName;
+    private Long stateId;
     private String stateName;
+    private Long cityId;
     private String cityName;
     private String status;
     private String postalCode;

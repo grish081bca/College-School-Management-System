@@ -37,16 +37,20 @@ public class TenantValidationService {
             throw new ResourceNotFoundException("Tenant Not found.");
         }
         String tenantName = ConvertUtils.normalizeText(request.getTenantName());
-        if (tenantRepository.existsByTenantNameIgnoreCaseAndIdNot(tenantName, id)) {
+        String contactEmail = ConvertUtils.normalizeText(request.getContactEmail());
+        String contactPhone = ConvertUtils.normalizeText(request.getContactPhone());
+        String contactEmailSecondary = ConvertUtils.normalizeText(request.getContactEmailSecondary());
+        String contactPhoneSecondary = ConvertUtils.normalizeText(request.getContactPhoneSecondary());
+        if (tenantName != null && tenantRepository.existsByTenantNameIgnoreCaseAndIdNot(tenantName, id)) {
             throw new DuplicateResourceException("Name already exists: " + tenantName);
-        } else if (tenantRepository.existsByContactEmailAndIdNot(request.getContactEmail(), id)) {
-            throw new DuplicateResourceException("Email already exists: " + request.getContactEmail());
-        } else if (tenantRepository.existsByContactPhoneAndIdNot(request.getContactPhone(), id)) {
-            throw new DuplicateResourceException("Phone number already exists: " + request.getContactPhone());
-        }else if(tenantRepository.existsByContactEmailSecondaryAndIdNot(request.getContactEmailSecondary(), id)){
-            throw new DuplicateResourceException("Email already exists: " + request.getContactEmail());
-        } else if (tenantRepository.existsByContactPhoneSecondaryAndIdNot(request.getContactPhoneSecondary(), id)) {
-            throw new DuplicateResourceException("Phone number already exists: " + request.getContactPhone());
+        } else if (contactEmail != null && tenantRepository.existsByContactEmailAndIdNot(contactEmail, id)) {
+            throw new DuplicateResourceException("Email already exists: " + contactEmail);
+        } else if (contactPhone != null && tenantRepository.existsByContactPhoneAndIdNot(contactPhone, id)) {
+            throw new DuplicateResourceException("Phone number already exists: " + contactPhone);
+        } else if (contactEmailSecondary != null && tenantRepository.existsByContactEmailSecondaryAndIdNot(contactEmailSecondary, id)) {
+            throw new DuplicateResourceException("Email already exists: " + contactEmailSecondary);
+        } else if (contactPhoneSecondary != null && tenantRepository.existsByContactPhoneSecondaryAndIdNot(contactPhoneSecondary, id)) {
+            throw new DuplicateResourceException("Phone number already exists: " + contactPhoneSecondary);
         }
         if (request.getCountryId()!=null && request.getStateId() != null && request.getCityId() != null) {
             validateLocation(request.getCountryId(), request.getStateId(), request.getCityId());

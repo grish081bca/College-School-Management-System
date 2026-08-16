@@ -87,12 +87,15 @@ public class TenantMapperImpl implements TenantMapper {
             dto.setPostalCode(entity.getPostalCode());
         }
         if (entity.getCountry() != null) {
+            dto.setCountryId(entity.getCountry().getId());
             dto.setCountryName(entity.getCountry().getName());
         }
         if (entity.getState() != null) {
+            dto.setStateId(entity.getState().getId());
             dto.setStateName(entity.getState().getName());
         }
         if (entity.getCity() != null) {
+            dto.setCityId(entity.getCity().getId());
             dto.setCityName(entity.getCity().getName());
         }
         dto.setStatus(entity.getStatus().name());
