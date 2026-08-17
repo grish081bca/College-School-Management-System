@@ -7,6 +7,8 @@ import com.college.erp.collegemanagementsystem.service.EntityChangeLogService;
 import com.college.erp.collegemanagementsystem.util.ConvertUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -41,6 +43,14 @@ public class EntityChangeLogServiceImpl implements EntityChangeLogService {
         log.setNewValue(currentValue);
         log.setRemarks(ConvertUtils.normalizeText(remarks));
         repository.save(log);
+    }
+
+    @Override
+    public List<EntityChangeLog> getRecentChanges(String entityName, Long entityId) {
+        if (entityName == null || entityId == null) {
+            return Collections.emptyList();
+        }
+        return repository.findTop25ByEntityNameAndEntityIdOrderByCreatedAtDesc(entityName, entityId);
     }
 
     private String stringify(Object value) {
