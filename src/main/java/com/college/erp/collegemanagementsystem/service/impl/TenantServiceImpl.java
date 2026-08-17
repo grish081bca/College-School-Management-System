@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.dto.TenantDTO;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -135,10 +136,18 @@ public class TenantServiceImpl implements TenantService {
             if (search != null && !search.isBlank()) {
                 String term = "%" + search.trim().toLowerCase() + "%";
                 predicate = builder.and(predicate, builder.or(
+                        builder.like(root.get("createdAt").as(String.class), term),
                         builder.like(builder.lower(root.get("tenantCode")), term),
                         builder.like(builder.lower(root.get("tenantName")), term),
                         builder.like(builder.lower(root.get("contactEmail")), term),
-                        builder.like(builder.lower(root.get("contactPhone")), term)
+                        builder.like(builder.lower(root.get("contactEmailSecondary")), term),
+                        builder.like(builder.lower(root.get("contactPhone")), term),
+                        builder.like(builder.lower(root.get("contactPhoneSecondary")), term),
+                        builder.like(builder.lower(root.get("addressLine1")), term),
+                        builder.like(builder.lower(root.get("addressLine2")), term),
+                        builder.like(builder.lower(root.get("postalCode")), term),
+                        builder.like(builder.lower(root.get("status").as(String.class)), term),
+                        builder.like(builder.lower(root.get("tenantType").as(String.class)), term)
                 ));
             }
             if (status != null) {
@@ -151,7 +160,8 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagablePage<TenantDTO> getTenantsPage(String tenantName,
+    public PagablePage<TenantDTO> getTenantsPage(String search,
+                                                 String tenantName,
                                                  String tenantCode,
                                                  String contactPhone,
                                                  LocalDate fromDate,
@@ -162,6 +172,24 @@ public class TenantServiceImpl implements TenantService {
         PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
         Specification<Tenant> specification = (root, query, builder) -> {
             var predicate = builder.conjunction();
+            if (search != null && !search.isBlank()) {
+                String term = "%" + search.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(root.get("id").as(String.class), term),
+                        builder.like(root.get("createdAt").as(String.class), term),
+                        builder.like(builder.lower(root.get("tenantCode")), term),
+                        builder.like(builder.lower(root.get("tenantName")), term),
+                        builder.like(builder.lower(root.get("contactEmail")), term),
+                        builder.like(builder.lower(root.get("contactEmailSecondary")), term),
+                        builder.like(builder.lower(root.get("contactPhone")), term),
+                        builder.like(builder.lower(root.get("contactPhoneSecondary")), term),
+                        builder.like(builder.lower(root.get("addressLine1")), term),
+                        builder.like(builder.lower(root.get("addressLine2")), term),
+                        builder.like(builder.lower(root.get("postalCode")), term),
+                        builder.like(builder.lower(root.get("status").as(String.class)), term),
+                        builder.like(builder.lower(root.get("tenantType").as(String.class)), term)
+                ));
+            }
             if (tenantName != null && !tenantName.isBlank()) {
                 predicate = builder.and(predicate, builder.equal(builder.lower(root.get("tenantName")), tenantName.trim().toLowerCase()));
             }

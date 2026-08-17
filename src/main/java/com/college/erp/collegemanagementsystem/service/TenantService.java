@@ -33,7 +33,8 @@ public interface TenantService {
 
     PagablePage<TenantDTO> getTenantsPage(String search, TenantStatus status, Integer page, Integer size);
 
-    PagablePage<TenantDTO> getTenantsPage(String tenantName,
+    PagablePage<TenantDTO> getTenantsPage(String search,
+                                          String tenantName,
                                           String tenantCode,
                                           String contactPhone,
                                           LocalDate fromDate,

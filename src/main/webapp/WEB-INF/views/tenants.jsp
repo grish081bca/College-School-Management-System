@@ -7,6 +7,9 @@
 <%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
     <form class="filter-grid tenant-filter-grid" action="<c:url value='/web/tenants'/>" method="get">
+        <label>Master Search
+            <input name="q" value="<c:out value='${search}'/>" placeholder="Search all columns">
+        </label>
         <label>College name
             <select name="tenantName">
                 <option value="">All colleges</option>

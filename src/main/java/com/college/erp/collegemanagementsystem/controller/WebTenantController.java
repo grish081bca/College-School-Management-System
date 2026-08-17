@@ -37,7 +37,8 @@ public class WebTenantController {
         this.cities = cities;
     }
     @GetMapping("/web/tenants")
-    public String list(@RequestParam(required = false) String tenantName,
+    public String list(@RequestParam(required = false, name = "q") String search,
+                       @RequestParam(required = false) String tenantName,
                        @RequestParam(required = false) String tenantCode,
                        @RequestParam(required = false) String contactPhone,
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
@@ -46,9 +47,10 @@ public class WebTenantController {
                        @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer size,
                        Model m) {
-        m.addAttribute("page", service.getTenantsPage(tenantName, tenantCode, contactPhone, fromDate, toDate, status, page, size));
+        m.addAttribute("page", service.getTenantsPage(search, tenantName, tenantCode, contactPhone, fromDate, toDate, status, page, size));
         m.addAttribute("tenantNames", service.getTenantNames());
         m.addAttribute("statuses", TenantStatus.values());
+        m.addAttribute("search", search);
         m.addAttribute("selectedTenantName", tenantName);
         m.addAttribute("tenantCode", tenantCode);
         m.addAttribute("contactPhone", contactPhone);
@@ -56,6 +58,7 @@ public class WebTenantController {
         m.addAttribute("toDate", toDate);
         m.addAttribute("selectedStatus", status);
         var filters = WebPagination.filters();
+        filters.put("q", search);
         filters.put("tenantName", tenantName);
         filters.put("tenantCode", tenantCode);
         filters.put("contactPhone", contactPhone);
