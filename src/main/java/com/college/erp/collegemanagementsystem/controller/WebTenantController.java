@@ -6,11 +6,14 @@ import com.college.erp.collegemanagementsystem.dto.TenantDTO;
 import com.college.erp.collegemanagementsystem.enums.TenantStatus;
 import com.college.erp.collegemanagementsystem.service.*;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
 
 /**
  * @author grish
@@ -34,17 +37,30 @@ public class WebTenantController {
         this.cities = cities;
     }
     @GetMapping("/web/tenants")
-    public String list(@RequestParam(required = false) String q,
+    public String list(@RequestParam(required = false) String tenantName,
+                       @RequestParam(required = false) String tenantCode,
+                       @RequestParam(required = false) String contactPhone,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
                        @RequestParam(required = false) TenantStatus status,
                        @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer size,
                        Model m) {
-        m.addAttribute("page", service.getTenantsPage(q, status, page, size));
+        m.addAttribute("page", service.getTenantsPage(tenantName, tenantCode, contactPhone, fromDate, toDate, status, page, size));
+        m.addAttribute("tenantNames", service.getTenantNames());
         m.addAttribute("statuses", TenantStatus.values());
-        m.addAttribute("q", q);
+        m.addAttribute("selectedTenantName", tenantName);
+        m.addAttribute("tenantCode", tenantCode);
+        m.addAttribute("contactPhone", contactPhone);
+        m.addAttribute("fromDate", fromDate);
+        m.addAttribute("toDate", toDate);
         m.addAttribute("selectedStatus", status);
         var filters = WebPagination.filters();
-        filters.put("q", q);
+        filters.put("tenantName", tenantName);
+        filters.put("tenantCode", tenantCode);
+        filters.put("contactPhone", contactPhone);
+        filters.put("fromDate", fromDate);
+        filters.put("toDate", toDate);
         filters.put("status", status);
         WebPagination.add(m, "/web/tenants", size, filters);
         return "tenants";

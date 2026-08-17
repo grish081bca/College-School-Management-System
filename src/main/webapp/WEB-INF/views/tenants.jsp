@@ -6,7 +6,27 @@
 <%--<c:set var="pageActionText" value="Add tenant"/>--%>
 <%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
-    <form class="filter-grid" action="<c:url value='/web/tenants'/>" method="get">
+    <form class="filter-grid tenant-filter-grid" action="<c:url value='/web/tenants'/>" method="get">
+        <label>College name
+            <select name="tenantName">
+                <option value="">All colleges</option>
+                <c:forEach items="${tenantNames}" var="name">
+                    <option value="${name}" ${name == selectedTenantName ? 'selected' : ''}><c:out value="${name}"/></option>
+                </c:forEach>
+            </select>
+        </label>
+        <label>Code
+            <input name="tenantCode" value="<c:out value='${tenantCode}'/>" placeholder="College code">
+        </label>
+        <label>Phone number
+            <input name="contactPhone" value="<c:out value='${contactPhone}'/>" placeholder="Phone number">
+        </label>
+        <label>From date
+            <input type="date" name="fromDate" value="<c:out value='${fromDate}'/>">
+        </label>
+        <label>To date
+            <input type="date" name="toDate" value="<c:out value='${toDate}'/>">
+        </label>
         <label>Status
             <select name="status">
                 <option value="">All statuses</option>
@@ -15,8 +35,18 @@
                 </c:forEach>
             </select>
         </label>
-        <c:set var="filterActionUrl" value="/web/tenants"/>
-        <%@ include file="fragments/search-filter.jspf" %>
+        <label>Rows
+            <select name="size">
+                <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
+                <option value="25" ${pageSize == 25 ? 'selected' : ''}>25</option>
+                <option value="50" ${pageSize == 50 ? 'selected' : ''}>50</option>
+                <option value="100" ${pageSize == 100 ? 'selected' : ''}>100</option>
+            </select>
+        </label>
+        <div class="filter-actions">
+            <button class="primary" type="submit">Apply</button>
+            <a class="button secondary" href="<c:url value='/web/tenants'/>">Reset</a>
+        </div>
     </form>
 </section>
 <section class="panel">
@@ -24,14 +54,11 @@
         <table class="data-table">
             <thead>
             <tr>
+                <th>Created Date</th>
                 <th>Code</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Secondary Email</th>
                 <th>Phone</th>
-                <th>Secondary Phone</th>
-                <th>Address Line 1</th>
-                <th>Address Line 2</th>
                 <th>Country</th>
                 <th>State</th>
                 <th>City</th>
@@ -42,14 +69,11 @@
             </thead>
             <tbody><c:forEach items="${page.objects}" var="tenant">
                 <tr>
+                    <td><c:out value="${tenant.createdDate}"/></td>
                     <td><c:out value="${tenant.tenantCode}"/></td>
                     <td><c:out value="${tenant.tenantName}"/></td>
                     <td><c:out value="${tenant.contactEmail}"/></td>
-                    <td><c:out value="${tenant.contactEmailSecondary}"/></td>
                     <td><c:out value="${tenant.contactPhone}"/></td>
-                    <td><c:out value="${tenant.contactPhoneSecondary}"/></td>
-                    <td><c:out value="${tenant.addressLine1}"/></td>
-                    <td><c:out value="${tenant.addressLine2}"/></td>
                     <td><c:out value="${tenant.countryName}"/></td>
                     <td><c:out value="${tenant.stateName}"/></td>
                     <td><c:out value="${tenant.cityName}"/></td>

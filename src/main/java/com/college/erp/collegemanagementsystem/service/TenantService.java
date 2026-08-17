@@ -1,6 +1,7 @@
 package com.college.erp.collegemanagementsystem.service;
 
 import java.util.List;
+import java.time.LocalDate;
 
 import com.college.erp.collegemanagementsystem.dto.TenantDTO;
 import com.college.erp.collegemanagementsystem.dto.PagablePage;
@@ -28,7 +29,18 @@ public interface TenantService {
 
     List<TenantDTO> getAllTenants();
 
+    List<String> getTenantNames();
+
     PagablePage<TenantDTO> getTenantsPage(String search, TenantStatus status, Integer page, Integer size);
+
+    PagablePage<TenantDTO> getTenantsPage(String tenantName,
+                                          String tenantCode,
+                                          String contactPhone,
+                                          LocalDate fromDate,
+                                          LocalDate toDate,
+                                          TenantStatus status,
+                                          Integer page,
+                                          Integer size);
 
     TenantDTO activateTenant(Long id);
 

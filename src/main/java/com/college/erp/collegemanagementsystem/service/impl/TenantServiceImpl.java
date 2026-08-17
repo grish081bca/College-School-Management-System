@@ -1,5 +1,8 @@
 package com.college.erp.collegemanagementsystem.service.impl;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import com.college.erp.collegemanagementsystem.dto.PagablePage;
@@ -119,6 +122,12 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<String> getTenantNames() {
+        return tenantRepository.findAll(Sort.by(Sort.Direction.ASC, "tenantName")).stream().map(Tenant::getTenantName).filter(name -> name != null && !name.isBlank()).distinct().toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PagablePage<TenantDTO> getTenantsPage(String search, TenantStatus status, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
         Specification<Tenant> specification = (root, query, builder) -> {
@@ -131,6 +140,42 @@ public class TenantServiceImpl implements TenantService {
                         builder.like(builder.lower(root.get("contactEmail")), term),
                         builder.like(builder.lower(root.get("contactPhone")), term)
                 ));
+            }
+            if (status != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("status"), status));
+            }
+            return predicate;
+        };
+        return PagablePage.from(tenantRepository.findAll(specification, pageRequest).map(tenantMapper::toDto));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<TenantDTO> getTenantsPage(String tenantName,
+                                                 String tenantCode,
+                                                 String contactPhone,
+                                                 LocalDate fromDate,
+                                                 LocalDate toDate,
+                                                 TenantStatus status,
+                                                 Integer page,
+                                                 Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
+        Specification<Tenant> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            if (tenantName != null && !tenantName.isBlank()) {
+                predicate = builder.and(predicate, builder.equal(builder.lower(root.get("tenantName")), tenantName.trim().toLowerCase()));
+            }
+            if (tenantCode != null && !tenantCode.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(root.get("tenantCode")), "%" + tenantCode.trim().toLowerCase() + "%"));
+            }
+            if (contactPhone != null && !contactPhone.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(root.get("contactPhone")), "%" + contactPhone.trim().toLowerCase() + "%"));
+            }
+            if (fromDate != null) {
+                predicate = builder.and(predicate, builder.greaterThanOrEqualTo(root.get("createdAt"), toOffsetDateTime(fromDate)));
+            }
+            if (toDate != null) {
+                predicate = builder.and(predicate, builder.lessThan(root.get("createdAt"), toOffsetDateTime(toDate.plusDays(1))));
             }
             if (status != null) {
                 predicate = builder.and(predicate, builder.equal(root.get("status"), status));
@@ -256,5 +301,9 @@ public class TenantServiceImpl implements TenantService {
     private String effectiveRemarks(String remarks, String fallback) {
         String normalized = com.college.erp.collegemanagementsystem.util.ConvertUtils.normalizeText(remarks);
         return normalized == null ? fallback : normalized;
+    }
+
+    private OffsetDateTime toOffsetDateTime(LocalDate date) {
+        return date.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime();
     }
 }
