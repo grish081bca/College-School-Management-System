@@ -1,25 +1,29 @@
 <%@ include file="fragments/header.jspf" %>
-<%--<c:set var="pageEyebrow" value="Tenant administration"/>--%>
-<%--<c:set var="pageTitle" value="Tenants"/>--%>
-<%--<c:set var="pageDescription" value="Manage tenant colleges, contact information, location and operational status."/>--%>
-<%--<c:set var="pageActionUrl" value="/web/tenants/add"/>--%>
-<%--<c:set var="pageActionText" value="Add tenant"/>--%>
-<%--<%@ include file="fragments/page-header.jspf" %>--%>
 <section class="filter-panel">
-    <form class="filter-grid tenant-filter-grid" action="<c:url value='/web/tenants'/>" method="get">
+    <form class="filter-grid tenant-filter-grid" action="<c:url value='/web/tenant-branches'/>" method="get">
         <label>Master Search
             <input name="q" value="<c:out value='${search}'/>" placeholder="Search all columns">
         </label>
-        <label>College name
+        <label>Main tenant
+            <select name="parentTenantId">
+                <option value="">All main tenants</option>
+                <c:forEach items="${mainTenants}" var="mainTenant">
+                    <option value="${mainTenant.id}" ${mainTenant.id == parentTenantId ? 'selected' : ''}>
+                        <c:out value="${mainTenant.tenantName}"/> - <c:out value="${mainTenant.tenantCode}"/>
+                    </option>
+                </c:forEach>
+            </select>
+        </label>
+        <label>Branch name
             <select name="tenantName">
-                <option value="">All colleges</option>
+                <option value="">All branches</option>
                 <c:forEach items="${tenantNames}" var="name">
                     <option value="${name}" ${name == selectedTenantName ? 'selected' : ''}><c:out value="${name}"/></option>
                 </c:forEach>
             </select>
         </label>
-        <label>Code
-            <input name="tenantCode" value="<c:out value='${tenantCode}'/>" placeholder="College code">
+        <label>Branch code
+            <input name="tenantCode" value="<c:out value='${tenantCode}'/>" placeholder="Branch code">
         </label>
         <label>Phone number
             <input name="contactPhone" value="<c:out value='${contactPhone}'/>" placeholder="Phone number">
@@ -57,7 +61,7 @@
         </label>
         <div class="filter-actions">
             <button class="primary" type="submit">Apply</button>
-            <a class="button secondary" href="<c:url value='/web/tenants'/>">Reset</a>
+            <a class="button secondary" href="<c:url value='/web/tenant-branches'/>">Reset</a>
         </div>
     </form>
 </section>
@@ -67,8 +71,9 @@
             <thead>
             <tr>
                 <th>Created Date</th>
-                <th>Code</th>
-                <th>Name</th>
+                <th>Main Tenant</th>
+                <th>Branch Code</th>
+                <th>Branch Name</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Country</th>
@@ -82,6 +87,7 @@
             <tbody><c:forEach items="${page.objects}" var="tenant">
                 <tr>
                     <td><c:out value="${tenant.createdDate}"/></td>
+                    <td><c:out value="${tenant.parentTenantName}"/></td>
                     <td><c:out value="${tenant.tenantCode}"/></td>
                     <td><c:out value="${tenant.tenantName}"/></td>
                     <td><c:out value="${tenant.contactEmail}"/></td>
@@ -92,19 +98,19 @@
                     <td><c:out value="${tenant.postalCode}"/></td>
                     <td><c:out value="${tenant.status}"/></td>
                     <td class="actions-cell">
-                        <a class="action-button secondary" href="<c:url value='/web/tenants/${tenant.id}/edit'/>" title="Edit tenant" aria-label="Edit tenant">
+                        <a class="action-button secondary" href="<c:url value='/web/tenant-branches/${tenant.id}/edit'/>" title="Edit branch" aria-label="Edit branch">
                             <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                             <span>Edit</span>
                         </a>
-                        <a class="action-button secondary" href="<c:url value='/web/tenants/${tenant.id}'/>" title="View tenant" aria-label="View tenant">
+                        <a class="action-button secondary" href="<c:url value='/web/tenant-branches/${tenant.id}'/>" title="View branch" aria-label="View branch">
                             <i class="fa-solid fa-eye" aria-hidden="true"></i>
                             <span>View</span>
                         </a>
-                        <button class="action-button secondary tenant-status-trigger" type="button"
-                                data-action="<c:url value='/web/tenants/${tenant.id}/status'/>"
+                        <button class="action-button secondary tenant-branch-status-trigger" type="button"
+                                data-action="<c:url value='/web/tenant-branches/${tenant.id}/status'/>"
                                 data-status="${tenant.status}"
                                 data-name="<c:out value='${tenant.tenantName}'/>"
-                                title="Change tenant status" aria-label="Change tenant status">
+                                title="Change branch status" aria-label="Change branch status">
                             <i class="fa-solid fa-toggle-on" aria-hidden="true"></i>
                             <span>Change status</span>
                         </button>
@@ -116,17 +122,17 @@
     <%@ include file="fragments/data-table-empty.jspf" %>
     <%@ include file="fragments/pagination.jspf" %>
 </section>
-<dialog class="status-dialog" id="tenantStatusDialog">
-    <form id="tenantStatusForm" method="post">
+<dialog class="status-dialog" id="tenantBranchStatusDialog">
+    <form id="tenantBranchStatusForm" method="post">
         <div class="dialog-header">
-            <h2>Change tenant status</h2>
+            <h2>Change branch status</h2>
             <button class="icon-button dialog-close" type="button" aria-label="Close dialog">
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
-        <p class="muted" id="tenantStatusName"></p>
+        <p class="muted" id="tenantBranchStatusName"></p>
         <label>Status
-            <select name="status" id="tenantStatusSelect" required>
+            <select name="status" id="tenantBranchStatusSelect" required>
                 <c:forEach items="${statuses}" var="status">
                     <option value="${status}">${status}</option>
                 </c:forEach>
@@ -143,12 +149,12 @@
 </dialog>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var dialog = document.getElementById('tenantStatusDialog');
-        var form = document.getElementById('tenantStatusForm');
-        var statusSelect = document.getElementById('tenantStatusSelect');
-        var tenantName = document.getElementById('tenantStatusName');
+        var dialog = document.getElementById('tenantBranchStatusDialog');
+        var form = document.getElementById('tenantBranchStatusForm');
+        var statusSelect = document.getElementById('tenantBranchStatusSelect');
+        var tenantName = document.getElementById('tenantBranchStatusName');
 
-        document.querySelectorAll('.tenant-status-trigger').forEach(function (button) {
+        document.querySelectorAll('.tenant-branch-status-trigger').forEach(function (button) {
             button.addEventListener('click', function () {
                 form.action = button.dataset.action;
                 statusSelect.value = button.dataset.status;

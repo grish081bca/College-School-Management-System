@@ -18,6 +18,10 @@ public class TenantDTO {
     private String updatedBy;
     private String tenantCode;
     private String tenantName;
+    private String tenantType;
+    private Long parentTenantId;
+    private String parentTenantCode;
+    private String parentTenantName;
     private String contactEmail;
     private String contactEmailSecondary;
     private String contactPhone;

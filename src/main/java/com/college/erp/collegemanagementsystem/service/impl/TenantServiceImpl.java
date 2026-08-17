@@ -17,6 +17,7 @@ import com.college.erp.collegemanagementsystem.exception.ResourceNotFoundExcepti
 import com.college.erp.collegemanagementsystem.entity.Tenant;
 import com.college.erp.collegemanagementsystem.enums.EntityChangeAction;
 import com.college.erp.collegemanagementsystem.enums.TenantStatus;
+import com.college.erp.collegemanagementsystem.enums.TenantType;
 import com.college.erp.collegemanagementsystem.dto.request.TenantCreateRequest;
 import com.college.erp.collegemanagementsystem.dto.request.TenantUpdateRequest;
 import com.college.erp.collegemanagementsystem.mapper.TenantMapper;
@@ -59,6 +60,7 @@ public class TenantServiceImpl implements TenantService {
             tenantValidationService.validateCreate(request);
             Tenant tenant = tenantMapper.toEntity(request);
             tenant.setTenantCode(TenantCodeGenerator.generateUniqueCode(tenantRepository::existsByTenantCodeIgnoreCase));
+            tenant.setTenantType(TenantType.HEAD);
             Tenant savedTenant = tenantRepository.save(tenant);
             logCreatedTenant(savedTenant);
             return tenantMapper.toDto(savedTenant);
@@ -123,8 +125,28 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<TenantDTO> getHeadTenants() {
+        return tenantMapper.toTenantList(tenantRepository.findByTenantTypeOrderByTenantNameAsc(TenantType.HEAD));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<String> getTenantNames() {
-        return tenantRepository.findAll(Sort.by(Sort.Direction.ASC, "tenantName")).stream().map(Tenant::getTenantName).filter(name -> name != null && !name.isBlank()).distinct().toList();
+        return tenantRepository.findByTenantTypeOrderByTenantNameAsc(TenantType.HEAD).stream()
+                .map(Tenant::getTenantName)
+                .filter(name -> name != null && !name.isBlank())
+                .distinct()
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getTenantBranchNames() {
+        return tenantRepository.findByTenantTypeOrderByTenantNameAsc(TenantType.BRANCH).stream()
+                .map(Tenant::getTenantName)
+                .filter(name -> name != null && !name.isBlank())
+                .distinct()
+                .toList();
     }
 
     @Override
@@ -164,6 +186,9 @@ public class TenantServiceImpl implements TenantService {
                                                  String tenantName,
                                                  String tenantCode,
                                                  String contactPhone,
+                                                 String country,
+                                                 String state,
+                                                 String city,
                                                  LocalDate fromDate,
                                                  LocalDate toDate,
                                                  TenantStatus status,
@@ -172,6 +197,10 @@ public class TenantServiceImpl implements TenantService {
         PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
         Specification<Tenant> specification = (root, query, builder) -> {
             var predicate = builder.conjunction();
+            var countryJoin = root.join("country", JoinType.LEFT);
+            var stateJoin = root.join("state", JoinType.LEFT);
+            var cityJoin = root.join("city", JoinType.LEFT);
+            predicate = builder.and(predicate, builder.equal(root.get("tenantType"), TenantType.HEAD));
             if (search != null && !search.isBlank()) {
                 String term = "%" + search.trim().toLowerCase() + "%";
                 predicate = builder.and(predicate, builder.or(
@@ -185,6 +214,10 @@ public class TenantServiceImpl implements TenantService {
                         builder.like(builder.lower(root.get("contactPhoneSecondary")), term),
                         builder.like(builder.lower(root.get("addressLine1")), term),
                         builder.like(builder.lower(root.get("addressLine2")), term),
+                        builder.like(builder.lower(countryJoin.get("name")), term),
+                        builder.like(builder.lower(countryJoin.get("isoCode")), term),
+                        builder.like(builder.lower(stateJoin.get("name")), term),
+                        builder.like(builder.lower(cityJoin.get("name")), term),
                         builder.like(builder.lower(root.get("postalCode")), term),
                         builder.like(builder.lower(root.get("status").as(String.class)), term),
                         builder.like(builder.lower(root.get("tenantType").as(String.class)), term)
@@ -198,6 +231,125 @@ public class TenantServiceImpl implements TenantService {
             }
             if (contactPhone != null && !contactPhone.isBlank()) {
                 predicate = builder.and(predicate, builder.like(builder.lower(root.get("contactPhone")), "%" + contactPhone.trim().toLowerCase() + "%"));
+            }
+            if (country != null && !country.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(countryJoin.get("name")), "%" + country.trim().toLowerCase() + "%"));
+            }
+            if (state != null && !state.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(stateJoin.get("name")), "%" + state.trim().toLowerCase() + "%"));
+            }
+            if (city != null && !city.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(cityJoin.get("name")), "%" + city.trim().toLowerCase() + "%"));
+            }
+            if (fromDate != null) {
+                predicate = builder.and(predicate, builder.greaterThanOrEqualTo(root.get("createdAt"), toOffsetDateTime(fromDate)));
+            }
+            if (toDate != null) {
+                predicate = builder.and(predicate, builder.lessThan(root.get("createdAt"), toOffsetDateTime(toDate.plusDays(1))));
+            }
+            if (status != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("status"), status));
+            }
+            return predicate;
+        };
+        return PagablePage.from(tenantRepository.findAll(specification, pageRequest).map(tenantMapper::toDto));
+    }
+
+    @Override
+    public TenantDTO createTenantBranch(TenantCreateRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Request could not be empty.");
+        }
+        if (request.getParentTenantId() == null) {
+            throw new IllegalArgumentException("Main tenant is required.");
+        }
+        try {
+            tenantValidationService.validateCreate(request);
+            Tenant parentTenant = tenantRepository.findById(request.getParentTenantId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Main tenant not found."));
+            if (parentTenant.getTenantType() != TenantType.HEAD) {
+                throw new IllegalArgumentException("Branch can only be created under a main tenant.");
+            }
+            Tenant tenant = tenantMapper.toEntity(request);
+            tenant.setParentTenant(parentTenant);
+            tenant.setTenantType(TenantType.BRANCH);
+            tenant.setTenantCode(generateBranchTenantCode(parentTenant));
+            Tenant savedTenant = tenantRepository.save(tenant);
+            logCreatedTenant(savedTenant);
+            logField(savedTenant.getId(), EntityChangeAction.CREATED, "parentTenant", null, parentTenant.getTenantName(), CREATE_REMARKS);
+            return tenantMapper.toDto(savedTenant);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<TenantDTO> getTenantBranchesPage(String search,
+                                                        Long parentTenantId,
+                                                        String tenantName,
+                                                        String tenantCode,
+                                                        String contactPhone,
+                                                        String country,
+                                                        String state,
+                                                        String city,
+                                                        LocalDate fromDate,
+                                                        LocalDate toDate,
+                                                        TenantStatus status,
+                                                        Integer page,
+                                                        Integer size) {
+        PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
+        Specification<Tenant> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            var countryJoin = root.join("country", JoinType.LEFT);
+            var stateJoin = root.join("state", JoinType.LEFT);
+            var cityJoin = root.join("city", JoinType.LEFT);
+            var parentTenantJoin = root.join("parentTenant", JoinType.LEFT);
+            predicate = builder.and(predicate, builder.equal(root.get("tenantType"), TenantType.BRANCH));
+            if (search != null && !search.isBlank()) {
+                String term = "%" + search.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(root.get("id").as(String.class), term),
+                        builder.like(root.get("createdAt").as(String.class), term),
+                        builder.like(builder.lower(root.get("tenantCode")), term),
+                        builder.like(builder.lower(root.get("tenantName")), term),
+                        builder.like(builder.lower(parentTenantJoin.get("tenantCode")), term),
+                        builder.like(builder.lower(parentTenantJoin.get("tenantName")), term),
+                        builder.like(builder.lower(root.get("contactEmail")), term),
+                        builder.like(builder.lower(root.get("contactEmailSecondary")), term),
+                        builder.like(builder.lower(root.get("contactPhone")), term),
+                        builder.like(builder.lower(root.get("contactPhoneSecondary")), term),
+                        builder.like(builder.lower(root.get("addressLine1")), term),
+                        builder.like(builder.lower(root.get("addressLine2")), term),
+                        builder.like(builder.lower(countryJoin.get("name")), term),
+                        builder.like(builder.lower(countryJoin.get("isoCode")), term),
+                        builder.like(builder.lower(stateJoin.get("name")), term),
+                        builder.like(builder.lower(cityJoin.get("name")), term),
+                        builder.like(builder.lower(root.get("postalCode")), term),
+                        builder.like(builder.lower(root.get("status").as(String.class)), term),
+                        builder.like(builder.lower(root.get("tenantType").as(String.class)), term)
+                ));
+            }
+            if (parentTenantId != null) {
+                predicate = builder.and(predicate, builder.equal(parentTenantJoin.get("id"), parentTenantId));
+            }
+            if (tenantName != null && !tenantName.isBlank()) {
+                predicate = builder.and(predicate, builder.equal(builder.lower(root.get("tenantName")), tenantName.trim().toLowerCase()));
+            }
+            if (tenantCode != null && !tenantCode.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(root.get("tenantCode")), "%" + tenantCode.trim().toLowerCase() + "%"));
+            }
+            if (contactPhone != null && !contactPhone.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(root.get("contactPhone")), "%" + contactPhone.trim().toLowerCase() + "%"));
+            }
+            if (country != null && !country.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(countryJoin.get("name")), "%" + country.trim().toLowerCase() + "%"));
+            }
+            if (state != null && !state.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(stateJoin.get("name")), "%" + state.trim().toLowerCase() + "%"));
+            }
+            if (city != null && !city.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(cityJoin.get("name")), "%" + city.trim().toLowerCase() + "%"));
             }
             if (fromDate != null) {
                 predicate = builder.and(predicate, builder.greaterThanOrEqualTo(root.get("createdAt"), toOffsetDateTime(fromDate)));
@@ -295,6 +447,7 @@ public class TenantServiceImpl implements TenantService {
         TenantDTO saved = tenantMapper.toDto(tenant);
         logField(saved.getId(), EntityChangeAction.CREATED, "tenantCode", null, saved.getTenantCode(), CREATE_REMARKS);
         logField(saved.getId(), EntityChangeAction.CREATED, "tenantName", null, saved.getTenantName(), CREATE_REMARKS);
+        logField(saved.getId(), EntityChangeAction.CREATED, "tenantType", null, saved.getTenantType(), CREATE_REMARKS);
         logField(saved.getId(), EntityChangeAction.CREATED, "contactEmail", null, saved.getContactEmail(), CREATE_REMARKS);
         logField(saved.getId(), EntityChangeAction.CREATED, "contactEmailSecondary", null, saved.getContactEmailSecondary(), CREATE_REMARKS);
         logField(saved.getId(), EntityChangeAction.CREATED, "contactPhone", null, saved.getContactPhone(), CREATE_REMARKS);
@@ -320,6 +473,29 @@ public class TenantServiceImpl implements TenantService {
         logField(after.getId(), action, "state", before.getStateName(), after.getStateName(), remarks);
         logField(after.getId(), action, "city", before.getCityName(), after.getCityName(), remarks);
         logField(after.getId(), action, "postalCode", before.getPostalCode(), after.getPostalCode(), remarks);
+    }
+
+    private String generateBranchTenantCode(Tenant parentTenant) {
+        String parentCode = parentTenant.getTenantCode();
+        if (parentCode == null || parentCode.isBlank()) {
+            throw new IllegalArgumentException("Main tenant code is required for branch code generation.");
+        }
+        int nextSequence = tenantRepository.findByParentTenant_Id(parentTenant.getId()).stream()
+                .map(Tenant::getTenantCode)
+                .filter(code -> code != null && code.startsWith(parentCode) && code.length() > parentCode.length())
+                .map(code -> code.substring(parentCode.length()))
+                .filter(suffix -> suffix.matches("\\d{3}"))
+                .mapToInt(Integer::parseInt)
+                .max()
+                .orElse(0) + 1;
+        if (nextSequence > 999) {
+            throw new IllegalStateException("Maximum branch code sequence reached for main tenant: " + parentCode);
+        }
+        String branchCode = parentCode + String.format("%03d", nextSequence);
+        if (tenantRepository.existsByTenantCodeIgnoreCase(branchCode)) {
+            throw new IllegalStateException("Generated branch code already exists: " + branchCode);
+        }
+        return branchCode;
     }
 
     private void logField(Long tenantId, EntityChangeAction action, String fieldName, Object oldValue, Object newValue, String remarks) {

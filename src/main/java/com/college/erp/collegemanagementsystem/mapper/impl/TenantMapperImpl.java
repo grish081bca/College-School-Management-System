@@ -71,6 +71,14 @@ public class TenantMapperImpl implements TenantMapper {
         }
         dto.setTenantName(entity.getTenantName());
         dto.setTenantCode(entity.getTenantCode());
+        if (entity.getTenantType() != null) {
+            dto.setTenantType(entity.getTenantType().name());
+        }
+        if (entity.getParentTenant() != null) {
+            dto.setParentTenantId(entity.getParentTenant().getId());
+            dto.setParentTenantCode(entity.getParentTenant().getTenantCode());
+            dto.setParentTenantName(entity.getParentTenant().getTenantName());
+        }
         dto.setContactEmail(entity.getContactEmail());
         if (entity.getContactEmailSecondary() != null) {
             dto.setContactEmailSecondary(entity.getContactEmailSecondary());

@@ -29,7 +29,11 @@ public interface TenantService {
 
     List<TenantDTO> getAllTenants();
 
+    List<TenantDTO> getHeadTenants();
+
     List<String> getTenantNames();
+
+    List<String> getTenantBranchNames();
 
     PagablePage<TenantDTO> getTenantsPage(String search, TenantStatus status, Integer page, Integer size);
 
@@ -37,11 +41,30 @@ public interface TenantService {
                                           String tenantName,
                                           String tenantCode,
                                           String contactPhone,
+                                          String country,
+                                          String state,
+                                          String city,
                                           LocalDate fromDate,
                                           LocalDate toDate,
                                           TenantStatus status,
                                           Integer page,
                                           Integer size);
+
+    TenantDTO createTenantBranch(TenantCreateRequest request);
+
+    PagablePage<TenantDTO> getTenantBranchesPage(String search,
+                                                 Long parentTenantId,
+                                                 String tenantName,
+                                                 String tenantCode,
+                                                 String contactPhone,
+                                                 String country,
+                                                 String state,
+                                                 String city,
+                                                 LocalDate fromDate,
+                                                 LocalDate toDate,
+                                                 TenantStatus status,
+                                                 Integer page,
+                                                 Integer size);
 
     TenantDTO activateTenant(Long id);
 

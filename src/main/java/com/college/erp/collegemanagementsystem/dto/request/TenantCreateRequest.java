@@ -58,4 +58,7 @@ public class TenantCreateRequest {
     @Size(max = 20)
     @NotNull
     private String postalCode;
+
+    @Nullable
+    private Long parentTenantId;
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.college.erp.collegemanagementsystem.entity.Tenant;
+import com.college.erp.collegemanagementsystem.enums.TenantType;
 
 /**
  * @author grish
@@ -26,6 +27,8 @@ public interface TenantRepository extends JpaRepository<Tenant, Long>, JpaSpecif
     boolean existsByTenantNameIgnoreCaseAndIdNot(String tenantName, Long id);
 
     Tenant findTenantById(Long id);
+
+    List<Tenant> findByTenantTypeOrderByTenantNameAsc(TenantType tenantType);
 
     boolean existsByContactEmailAndIdNot(String contactEmail, Long id);
 

@@ -60,6 +60,10 @@ public class MenuCreation {
                 subMenu("TENANTS_LIST", "List Tenants", "/web/tenants", "TENANT", 21),
                 subMenu("TENANTS_ADD", "Add Tenant", "/web/tenants/add", "TENANT", 22),
 
+                superMenu("TENANT_BRANCH", "Tenant Branch", null, "fa-solid fa-building", 23),
+                subMenu("TENANT_BRANCHES_LIST", "List Tenant Branches", "/web/tenant-branches", "TENANT_BRANCH", 24),
+                subMenu("TENANT_BRANCHES_ADD", "Add Tenant Branch", "/web/tenant-branches/add", "TENANT_BRANCH", 25),
+
                 superMenu("USER", "User", null, "fa-solid fa-users", 30),
                 subMenu("USERS_LIST", "List Users", "/web/users", "USER", 31),
                 subMenu("USERS_ADD", "Add User", "/web/users/add", "USER", 32),

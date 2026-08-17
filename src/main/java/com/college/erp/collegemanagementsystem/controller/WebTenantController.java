@@ -41,19 +41,25 @@ public class WebTenantController {
                        @RequestParam(required = false) String tenantName,
                        @RequestParam(required = false) String tenantCode,
                        @RequestParam(required = false) String contactPhone,
+                       @RequestParam(required = false) String country,
+                       @RequestParam(required = false) String state,
+                       @RequestParam(required = false) String city,
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
                        @RequestParam(required = false) TenantStatus status,
                        @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer size,
                        Model m) {
-        m.addAttribute("page", service.getTenantsPage(search, tenantName, tenantCode, contactPhone, fromDate, toDate, status, page, size));
+        m.addAttribute("page", service.getTenantsPage(search, tenantName, tenantCode, contactPhone, country, state, city, fromDate, toDate, status, page, size));
         m.addAttribute("tenantNames", service.getTenantNames());
         m.addAttribute("statuses", TenantStatus.values());
         m.addAttribute("search", search);
         m.addAttribute("selectedTenantName", tenantName);
         m.addAttribute("tenantCode", tenantCode);
         m.addAttribute("contactPhone", contactPhone);
+        m.addAttribute("country", country);
+        m.addAttribute("state", state);
+        m.addAttribute("city", city);
         m.addAttribute("fromDate", fromDate);
         m.addAttribute("toDate", toDate);
         m.addAttribute("selectedStatus", status);
@@ -62,6 +68,9 @@ public class WebTenantController {
         filters.put("tenantName", tenantName);
         filters.put("tenantCode", tenantCode);
         filters.put("contactPhone", contactPhone);
+        filters.put("country", country);
+        filters.put("state", state);
+        filters.put("city", city);
         filters.put("fromDate", fromDate);
         filters.put("toDate", toDate);
         filters.put("status", status);
