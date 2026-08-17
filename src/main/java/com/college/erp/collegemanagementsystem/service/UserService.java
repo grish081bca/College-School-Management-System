@@ -3,7 +3,10 @@ package com.college.erp.collegemanagementsystem.service;
 import com.college.erp.collegemanagementsystem.dto.PagablePage;
 import com.college.erp.collegemanagementsystem.dto.UserDTO;
 import com.college.erp.collegemanagementsystem.enums.UserStatus;
+import com.college.erp.collegemanagementsystem.enums.UserType;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,6 +15,22 @@ import java.util.Optional;
  */
 public interface UserService {
     PagablePage<UserDTO> findPage(String q, UserStatus status, Integer page, Integer size);
+
+    PagablePage<UserDTO> findPage(String q,
+                                  String username,
+                                  String fullName,
+                                  String email,
+                                  String phoneNumber,
+                                  Long tenantId,
+                                  UserType userType,
+                                  Boolean enabled,
+                                  LocalDate fromDate,
+                                  LocalDate toDate,
+                                  UserStatus status,
+                                  Integer page,
+                                  Integer size);
+
+    List<String> getUsernames();
 
     UserDTO create(UserDTO userDto, Long tenantId, Long userTemplateId);
 

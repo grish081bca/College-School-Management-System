@@ -16,10 +16,16 @@ import com.college.erp.collegemanagementsystem.util.ConvertUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import jakarta.persistence.criteria.JoinType;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -47,10 +53,100 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public PagablePage<UserDTO> findPage(String q, UserStatus status, Integer page, Integer size) {
+        return findPage(q, null, null, null, null, null, null, null, null, null, status, page, size);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagablePage<UserDTO> findPage(String q,
+                                         String username,
+                                         String fullName,
+                                         String email,
+                                         String phoneNumber,
+                                         Long tenantId,
+                                         UserType userType,
+                                         Boolean enabled,
+                                         LocalDate fromDate,
+                                         LocalDate toDate,
+                                         UserStatus status,
+                                         Integer page,
+                                         Integer size) {
         PageRequest pageRequest = PageRequest.of(PagablePage.normalizePage(page) - 1, PagablePage.normalizeSize(size), Sort.by(Sort.Direction.DESC, "id"));
-        Page<User> entities = userRepository.findAll(pageRequest);
-        Page<UserDTO> dtoPage = entities.map(ConvertUtils::toUserDTO);
-        return PagablePage.from(dtoPage);
+        Specification<User> specification = (root, query, builder) -> {
+            var predicate = builder.conjunction();
+            var tenantJoin = root.join("tenant", JoinType.LEFT);
+            var userTemplateJoin = root.join("userTemplate", JoinType.LEFT);
+            if (q != null && !q.isBlank()) {
+                String term = "%" + q.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(root.get("id").as(String.class), term),
+                        builder.like(root.get("createdAt").as(String.class), term),
+                        builder.like(builder.lower(root.get("username")), term),
+                        builder.like(builder.lower(root.get("firstName")), term),
+                        builder.like(builder.lower(root.get("middleName")), term),
+                        builder.like(builder.lower(root.get("lastName")), term),
+                        builder.like(builder.lower(root.get("email")), term),
+                        builder.like(builder.lower(root.get("phoneNumber")), term),
+                        builder.like(builder.lower(tenantJoin.get("tenantName")), term),
+                        builder.like(builder.lower(tenantJoin.get("tenantCode")), term),
+                        builder.like(builder.lower(userTemplateJoin.get("userType").as(String.class)), term),
+                        builder.like(builder.lower(root.get("userType").as(String.class)), term),
+                        builder.like(builder.lower(root.get("status").as(String.class)), term)
+                ));
+                if ("true".equals(q.trim().toLowerCase()) || "false".equals(q.trim().toLowerCase())) {
+                    predicate = builder.or(predicate, builder.equal(root.get("enabled"), Boolean.valueOf(q.trim())));
+                }
+            }
+            if (username != null && !username.isBlank()) {
+                predicate = builder.and(predicate, builder.equal(builder.lower(root.get("username")), username.trim().toLowerCase()));
+            }
+            if (fullName != null && !fullName.isBlank()) {
+                String term = "%" + fullName.trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(builder.lower(root.get("firstName")), term),
+                        builder.like(builder.lower(root.get("middleName")), term),
+                        builder.like(builder.lower(root.get("lastName")), term),
+                        builder.like(builder.lower(builder.concat(builder.concat(root.get("firstName"), " "), root.get("lastName"))), term)
+                ));
+            }
+            if (email != null && !email.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(root.get("email")), "%" + email.trim().toLowerCase() + "%"));
+            }
+            if (phoneNumber != null && !phoneNumber.isBlank()) {
+                predicate = builder.and(predicate, builder.like(builder.lower(root.get("phoneNumber")), "%" + phoneNumber.trim().toLowerCase() + "%"));
+            }
+            if (tenantId != null) {
+                predicate = builder.and(predicate, builder.equal(tenantJoin.get("id"), tenantId));
+            }
+            if (userType != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("userType"), userType));
+            }
+            if (enabled != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("enabled"), enabled));
+            }
+            if (fromDate != null) {
+                predicate = builder.and(predicate, builder.greaterThanOrEqualTo(root.get("createdAt"), toOffsetDateTime(fromDate)));
+            }
+            if (toDate != null) {
+                predicate = builder.and(predicate, builder.lessThan(root.get("createdAt"), toOffsetDateTime(toDate.plusDays(1))));
+            }
+            if (status != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("status"), status));
+            }
+            return predicate;
+        };
+        Page<User> entities = userRepository.findAll(specification, pageRequest);
+        return PagablePage.from(entities.map(ConvertUtils::toUserDTO));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getUsernames() {
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "username")).stream()
+                .map(User::getUsername)
+                .filter(name -> name != null && !name.isBlank())
+                .distinct()
+                .toList();
     }
     @Override
     public UserDTO create(UserDTO userDto, Long tenantId, Long userTemplateId) {
@@ -142,5 +238,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setStatus(status);
         userRepository.save(user);
+    }
+
+    private OffsetDateTime toOffsetDateTime(LocalDate date) {
+        return date.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime();
     }
 }

@@ -4,6 +4,7 @@ import com.college.erp.collegemanagementsystem.entity.User;
 import com.college.erp.collegemanagementsystem.enums.UserStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
  * @author grish
  *
  */
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     @Override
     @EntityGraph(attributePaths = {"tenant", "userTemplate", "userTemplate.menuTemplate"})
     Optional<User> findById(Long id);

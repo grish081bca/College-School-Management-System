@@ -6,11 +6,13 @@ import com.college.erp.collegemanagementsystem.enums.UserType;
 import com.college.erp.collegemanagementsystem.service.TenantService;
 import com.college.erp.collegemanagementsystem.service.UserService;
 import com.college.erp.collegemanagementsystem.service.UserTemplateService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 /**
@@ -31,18 +33,47 @@ public class WebUserController {
         this.userTemplateService = userTemplateService;
     }
     @GetMapping("/web/users")
-    public String list(@RequestParam(required = false) String q,
+    public String list(@RequestParam(required = false, name = "q") String search,
+                       @RequestParam(required = false) String username,
+                       @RequestParam(required = false) String fullName,
+                       @RequestParam(required = false) String email,
+                       @RequestParam(required = false) String phoneNumber,
+                       @RequestParam(required = false) Long tenantId,
+                       @RequestParam(required = false) UserType userType,
+                       @RequestParam(required = false) Boolean enabled,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
                        @RequestParam(required = false) UserStatus status,
                        @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer size,
                        Model m) {
-        m.addAttribute("page", userService.findPage(q, status, page, size));
-        m.addAttribute("q", q);
+        m.addAttribute("page", userService.findPage(search, username, fullName, email, phoneNumber, tenantId, userType, enabled, fromDate, toDate, status, page, size));
+        m.addAttribute("search", search);
+        m.addAttribute("usernames", userService.getUsernames());
+        m.addAttribute("selectedUsername", username);
+        m.addAttribute("fullName", fullName);
+        m.addAttribute("email", email);
+        m.addAttribute("phoneNumber", phoneNumber);
+        m.addAttribute("tenants", tenantService.getAllTenants());
+        m.addAttribute("tenantId", tenantId);
+        m.addAttribute("selectedUserType", userType);
+        m.addAttribute("enabled", enabled);
+        m.addAttribute("fromDate", fromDate);
+        m.addAttribute("toDate", toDate);
         m.addAttribute("selectedStatus", status);
         m.addAttribute("statuses", UserStatus.values());
         m.addAttribute("userTypes", UserType.values());
         var filters = WebPagination.filters();
-        filters.put("q", q);
+        filters.put("q", search);
+        filters.put("username", username);
+        filters.put("fullName", fullName);
+        filters.put("email", email);
+        filters.put("phoneNumber", phoneNumber);
+        filters.put("tenantId", tenantId);
+        filters.put("userType", userType);
+        filters.put("enabled", enabled);
+        filters.put("fromDate", fromDate);
+        filters.put("toDate", toDate);
         filters.put("status", status);
         WebPagination.add(m, "/web/users", size, filters);
         return "users";
