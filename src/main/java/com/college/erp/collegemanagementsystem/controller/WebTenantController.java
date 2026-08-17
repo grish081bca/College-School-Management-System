@@ -18,13 +18,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @Controller
 public class WebTenantController {
+    private static final String TENANT_ENTITY = "Tenant";
+
     private final TenantService service;
+    private final EntityChangeLogService entityChangeLogService;
     private final CountryService countries;
     private final StateService states;
     private final CityService cities;
 
-    public WebTenantController(TenantService service, CountryService countries, StateService states, CityService cities) {
+    public WebTenantController(TenantService service, EntityChangeLogService entityChangeLogService, CountryService countries, StateService states, CityService cities) {
         this.service = service;
+        this.entityChangeLogService = entityChangeLogService;
         this.countries = countries;
         this.states = states;
         this.cities = cities;
@@ -103,7 +107,9 @@ public class WebTenantController {
     @GetMapping("/web/tenants/{id}")
     public String view(@PathVariable Long id, Model m, RedirectAttributes a) {
         try {
-            m.addAttribute("tenant", service.getTenantById(id));
+            TenantDTO tenant = service.getTenantById(id);
+            m.addAttribute("tenant", tenant);
+            m.addAttribute("changeLogs", entityChangeLogService.getRecentChanges(TENANT_ENTITY, tenant.getId()));
             return "tenant-detail";
         } catch (Exception e) {
             a.addFlashAttribute("error", e.getMessage());
